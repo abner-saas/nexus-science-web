@@ -1,0 +1,126 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --navy: #002060;
+  --maroon: #800000;
+  --surface: #f4f5f7;
+  --input: #f1f3f6;
+  --card: #ffffff;
+  --line: #e3e6ea;
+  --line-light: #edeff2;
+  --ink: #1a1f2b;
+  --success: #10b981;
+  --danger: #dc2626;
+  --warning: #d97706;
+  --primary-dim: rgba(0, 32, 96, 0.08);
+  --primary-glow: rgba(0, 32, 96, 0.2);
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  color: var(--ink);
+  background: var(--surface);
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+::selection {
+  background: rgba(0, 32, 96, 0.33);
+  color: #000;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: var(--surface);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--line-light);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+@layer components {
+  .ns-nav-item {
+    @apply flex w-full items-center gap-2.5 rounded-nav border border-transparent px-3 py-[9px] text-[13px] font-medium text-black/65 no-underline transition-all;
+  }
+  .ns-nav-item:hover {
+    background: rgba(0, 32, 96, 0.06);
+    color: #002060;
+  }
+  .ns-nav-item-active {
+    @apply font-bold text-white shadow-nav;
+    background: #002060;
+  }
+  .ns-nav-item-active svg {
+    stroke: #ffffff !important;
+  }
+
+  .ns-btn {
+    @apply inline-flex items-center gap-1.5 rounded-lg px-4 py-2 text-[13px] font-semibold transition;
+  }
+  .ns-btn-primary {
+    @apply ns-btn bg-navy text-white shadow-btn hover:bg-navy/90 disabled:opacity-60;
+  }
+  .ns-btn-secondary {
+    @apply ns-btn border border-line bg-white text-navy hover:bg-input;
+  }
+  .ns-btn-ghost {
+    @apply ns-btn text-black/60 hover:bg-black/[0.03];
+  }
+
+  .ns-card {
+    @apply rounded-2xl border border-line bg-white shadow-card;
+  }
+
+  .ns-input {
+    @apply w-full rounded-xl border border-line bg-input px-3 py-2.5 text-sm text-ink outline-none transition;
+  }
+  .ns-input:focus {
+    border-color: #002060;
+    box-shadow: 0 0 0 3px var(--primary-glow);
+  }
+
+  .ns-label {
+    @apply mb-1.5 block text-sm text-black/60;
+  }
+
+  .ns-kpi-label {
+    @apply text-[11px] font-semibold uppercase tracking-[0.14em] text-black/45;
+  }
+
+  .ns-section-title {
+    @apply font-title text-lg font-bold tracking-tight text-ink;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.section-enter {
+  animation: fadeIn 0.35s ease both;
+}
