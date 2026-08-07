@@ -17,11 +17,13 @@ import {
   Menu,
   X,
   Settings,
+  Smartphone,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { api } from "@/lib/api";
 import { useAuthStore } from "@/store/auth";
-import { useState } from "react";
+import { canAccess, ROLE_LABELS } from "@/lib/roles";
+import { useMemo, useState } from "react";
 
 const NAV = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -34,6 +36,7 @@ const NAV = [
   { href: "/pagamentos", label: "Pagamentos", icon: CreditCard },
   { href: "/planos", label: "Planos dos Alunos", icon: Layers },
   { href: "/ia", label: "IA & Insights", icon: Sparkles },
+  { href: "/aluno", label: "App do Aluno", icon: Smartphone },
 ];
 
 export function Sidebar() {
@@ -42,6 +45,11 @@ export function Sidebar() {
   const user = useAuthStore((s) => s.user);
   const setUser = useAuthStore((s) => s.setUser);
   const [open, setOpen] = useState(false);
+
+  const visibleNav = useMemo(
+    () => NAV.filter((item) => canAccess(user?.role, item.href)),
+    [user?.role],
+  );
 
   async function logout() {
     try {
@@ -57,7 +65,7 @@ export function Sidebar() {
       <p className="px-1 pb-1.5 pt-2 text-[10px] font-bold uppercase tracking-[0.1em] text-black/30">
         Menu Principal
       </p>
-      {NAV.map((item) => {
+      {visibleNav.map((item) => {
         const active = pathname.startsWith(item.href);
         const Icon = item.icon;
         return (
@@ -140,22 +148,26 @@ export function Sidebar() {
         <div className="border-t border-black/[0.08] p-2.5">
           <div className="mb-2 truncate px-3 py-1 text-sm">
             <p className="font-medium text-ink">{user?.name}</p>
-            <p className="text-[11px] text-black/45">{user?.role}</p>
+            <p className="text-[11px] text-black/45">
+              {user?.role ? ROLE_LABELS[user.role] : ""}
+            </p>
           </div>
-          <Link
-            href="/configuracoes"
-            onClick={() => setOpen(false)}
-            className={cn(
-              "ns-nav-item mb-0.5",
-              pathname.startsWith("/configuracoes") && "ns-nav-item-active",
-            )}
-          >
-            <Settings
-              size={15}
-              color={pathname.startsWith("/configuracoes") ? "#FFFFFF" : "#002060"}
-            />
-            Configurações
-          </Link>
+          {canAccess(user?.role, "/configuracoes") ? (
+            <Link
+              href="/configuracoes"
+              onClick={() => setOpen(false)}
+              className={cn(
+                "ns-nav-item mb-0.5",
+                pathname.startsWith("/configuracoes") && "ns-nav-item-active",
+              )}
+            >
+              <Settings
+                size={15}
+                color={pathname.startsWith("/configuracoes") ? "#FFFFFF" : "#002060"}
+              />
+              Configurações
+            </Link>
+          ) : null}
           <button type="button" onClick={logout} className="ns-nav-item">
             <LogOut size={15} color="#002060" />
             Sair

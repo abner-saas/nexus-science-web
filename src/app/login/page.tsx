@@ -20,7 +20,7 @@ export default function LoginPage() {
     try {
       const res = await api.login(email, password);
       setUser(res.user);
-      router.replace("/dashboard");
+      router.replace(res.user.role === "STUDENT" ? "/aluno" : "/dashboard");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Falha no login");
     } finally {

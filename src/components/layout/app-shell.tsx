@@ -3,8 +3,10 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { api } from "@/lib/api";
+import { canAccess } from "@/lib/roles";
 import { useAuthStore } from "@/store/auth";
 import { Sidebar } from "./sidebar";
+import { usePathname } from "next/navigation";
 
 function LiveDate() {
   const [now, setNow] = useState(() => new Date());
@@ -35,6 +37,7 @@ export function AppShell({
   actions?: React.ReactNode;
 }) {
   const router = useRouter();
+  const pathname = usePathname();
   const { user, hydrated, setUser, setHydrated } = useAuthStore();
 
   useEffect(() => {
@@ -44,6 +47,7 @@ export function AppShell({
         const res = await api.me();
         if (!cancelled) setUser(res.user);
         if (!res.user) router.replace("/login");
+        else if (res.user.role === "STUDENT") router.replace("/aluno");
       } catch {
         if (!cancelled) {
           setUser(null);
@@ -57,6 +61,13 @@ export function AppShell({
       cancelled = true;
     };
   }, [router, setUser, setHydrated]);
+
+  useEffect(() => {
+    if (!hydrated || !user || user.role === "STUDENT") return;
+    if (pathname && !canAccess(user.role, pathname)) {
+      router.replace("/dashboard");
+    }
+  }, [hydrated, user, router, pathname]);
 
   if (!hydrated || !user) {
     return (
