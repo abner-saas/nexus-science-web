@@ -8,7 +8,10 @@ import { api } from "@/lib/api";
 
 export default function AvaliacaoPage() {
   const qc = useQueryClient();
-  const { data: students } = useQuery({ queryKey: ["students"], queryFn: () => api.students.list() });
+  const { data: students } = useQuery({
+    queryKey: ["students"],
+    queryFn: () => api.students.list(),
+  });
   const [studentId, setStudentId] = useState("");
   const [form, setForm] = useState({
     date: new Date().toISOString().slice(0, 10),
@@ -55,9 +58,15 @@ export default function AvaliacaoPage() {
     <AppShell title="Avaliação Física" subtitle="Evolução corporal e composição">
       <div className="mb-4 max-w-sm">
         <span className="ns-label">Aluno</span>
-        <select className="ns-input bg-white" value={studentId} onChange={(e) => setStudentId(e.target.value)}>
+        <select
+          className="ns-input bg-white"
+          value={studentId}
+          onChange={(e) => setStudentId(e.target.value)}
+        >
           {(students?.data ?? []).map((s) => (
-            <option key={s.id} value={s.id}>{s.name}</option>
+            <option key={s.id} value={s.id}>
+              {s.name}
+            </option>
           ))}
         </select>
       </div>
@@ -93,7 +102,9 @@ export default function AvaliacaoPage() {
                 ))}
                 {rows.length === 0 ? (
                   <tr>
-                    <td colSpan={5} className="py-4 text-black/45">Sem avaliações</td>
+                    <td colSpan={5} className="py-4 text-black/45">
+                      Sem avaliações
+                    </td>
                   </tr>
                 ) : null}
               </tbody>
@@ -106,30 +117,59 @@ export default function AvaliacaoPage() {
           <div className="mt-3 grid grid-cols-2 gap-3">
             <label className="col-span-2 block">
               <span className="ns-label">Data</span>
-              <input type="date" className="ns-input" value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} />
+              <input
+                type="date"
+                className="ns-input"
+                value={form.date}
+                onChange={(e) => setForm({ ...form, date: e.target.value })}
+              />
             </label>
             <label className="block">
               <span className="ns-label">Peso (kg)</span>
-              <input className="ns-input" value={form.weight} onChange={(e) => setForm({ ...form, weight: e.target.value })} />
+              <input
+                className="ns-input"
+                value={form.weight}
+                onChange={(e) => setForm({ ...form, weight: e.target.value })}
+              />
             </label>
             <label className="block">
               <span className="ns-label">Altura (cm)</span>
-              <input className="ns-input" value={form.heightCm} onChange={(e) => setForm({ ...form, heightCm: e.target.value })} />
+              <input
+                className="ns-input"
+                value={form.heightCm}
+                onChange={(e) => setForm({ ...form, heightCm: e.target.value })}
+              />
             </label>
             <label className="block">
               <span className="ns-label">% Gordura</span>
-              <input className="ns-input" value={form.bodyFat} onChange={(e) => setForm({ ...form, bodyFat: e.target.value })} />
+              <input
+                className="ns-input"
+                value={form.bodyFat}
+                onChange={(e) => setForm({ ...form, bodyFat: e.target.value })}
+              />
             </label>
             <label className="block">
               <span className="ns-label">Músculo (kg)</span>
-              <input className="ns-input" value={form.muscle} onChange={(e) => setForm({ ...form, muscle: e.target.value })} />
+              <input
+                className="ns-input"
+                value={form.muscle}
+                onChange={(e) => setForm({ ...form, muscle: e.target.value })}
+              />
             </label>
             <label className="col-span-2 block">
               <span className="ns-label">Cintura (cm)</span>
-              <input className="ns-input" value={form.waist} onChange={(e) => setForm({ ...form, waist: e.target.value })} />
+              <input
+                className="ns-input"
+                value={form.waist}
+                onChange={(e) => setForm({ ...form, waist: e.target.value })}
+              />
             </label>
           </div>
-          <button type="submit" className="ns-btn-primary mt-4" disabled={create.isPending || !studentId}>
+          <button
+            type="submit"
+            className="ns-btn-primary mt-4"
+            disabled={create.isPending || !studentId}
+          >
             {create.isPending ? "Salvando..." : "Salvar avaliação"}
           </button>
         </form>

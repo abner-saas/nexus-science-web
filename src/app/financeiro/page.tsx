@@ -79,11 +79,19 @@ export default function FinanceiroPage() {
             <div className="mt-4 grid gap-4 md:grid-cols-2">
               <div>
                 <p className="mb-2 text-xs text-black/45">Receita</p>
-                <MiniBars values={(d?.series ?? []).map((s) => s.revenue)} color="#002060" height={100} />
+                <MiniBars
+                  values={(d?.series ?? []).map((s) => s.revenue)}
+                  color="#002060"
+                  height={100}
+                />
               </div>
               <div>
                 <p className="mb-2 text-xs text-black/45">Despesas</p>
-                <MiniBars values={(d?.series ?? []).map((s) => s.expenses)} color="#800000" height={100} />
+                <MiniBars
+                  values={(d?.series ?? []).map((s) => s.expenses)}
+                  color="#800000"
+                  height={100}
+                />
               </div>
             </div>
           </div>
@@ -119,15 +127,45 @@ export default function FinanceiroPage() {
           <form onSubmit={onSubmit} className="ns-card h-fit p-5">
             <p className="ns-kpi-label">Nova transação</p>
             <div className="mt-3 space-y-3">
-              <select className="ns-input" value={form.type} onChange={(e) => setForm({ ...form, type: e.target.value })}>
+              <select
+                className="ns-input"
+                value={form.type}
+                onChange={(e) => setForm({ ...form, type: e.target.value })}
+              >
                 <option value="RECEITA">Receita</option>
                 <option value="DESPESA">Despesa</option>
               </select>
-              <input required placeholder="Categoria" className="ns-input" value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} />
-              <input required placeholder="Valor" className="ns-input" value={form.amount} onChange={(e) => setForm({ ...form, amount: e.target.value })} />
-              <input type="date" className="ns-input" value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} />
-              <input placeholder="Descrição" className="ns-input" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
-              <button type="submit" className="ns-btn-primary w-full justify-center" disabled={create.isPending}>
+              <input
+                required
+                placeholder="Categoria"
+                className="ns-input"
+                value={form.category}
+                onChange={(e) => setForm({ ...form, category: e.target.value })}
+              />
+              <input
+                required
+                placeholder="Valor"
+                className="ns-input"
+                value={form.amount}
+                onChange={(e) => setForm({ ...form, amount: e.target.value })}
+              />
+              <input
+                type="date"
+                className="ns-input"
+                value={form.date}
+                onChange={(e) => setForm({ ...form, date: e.target.value })}
+              />
+              <input
+                placeholder="Descrição"
+                className="ns-input"
+                value={form.description}
+                onChange={(e) => setForm({ ...form, description: e.target.value })}
+              />
+              <button
+                type="submit"
+                className="ns-btn-primary w-full justify-center"
+                disabled={create.isPending}
+              >
                 Lançar
               </button>
             </div>

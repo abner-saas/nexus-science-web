@@ -18,10 +18,7 @@ const PHASE_COPY: Record<string, string[]> = {
     "IA interpretativa (análise científica)",
     "Score de retenção & churn preditivo",
   ],
-  "Sprint 1–2": [
-    "CRUD de planos Bronze / Silver / Gold",
-    "Links de checkout e vínculo com CRM",
-  ],
+  "Sprint 1–2": ["CRUD de planos Bronze / Silver / Gold", "Links de checkout e vínculo com CRM"],
 };
 
 export function ModulePlaceholder({
@@ -48,8 +45,8 @@ export function ModulePlaceholder({
         </div>
         <h2 className="mt-4 font-title text-2xl font-extrabold text-navy">{title}</h2>
         <p className="mt-2 max-w-xl text-sm leading-relaxed text-black/55">
-          Navegação e identidade visual já alinhadas ao protótipo. Este módulo
-          será conectado à API com dados reais persistidos no PostgreSQL.
+          Navegação e identidade visual já alinhadas ao protótipo. Este módulo será conectado à API
+          com dados reais persistidos no PostgreSQL.
         </p>
         {items.length > 0 ? (
           <ul className="mt-5 space-y-2 border-t border-line pt-5">

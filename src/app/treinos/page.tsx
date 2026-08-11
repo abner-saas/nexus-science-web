@@ -16,8 +16,14 @@ type ExerciseDraft = {
 
 export default function TreinosPage() {
   const qc = useQueryClient();
-  const { data: students } = useQuery({ queryKey: ["students"], queryFn: () => api.students.list() });
-  const { data, isLoading } = useQuery({ queryKey: ["routines"], queryFn: () => api.routines.list() });
+  const { data: students } = useQuery({
+    queryKey: ["students"],
+    queryFn: () => api.students.list(),
+  });
+  const { data, isLoading } = useQuery({
+    queryKey: ["routines"],
+    queryFn: () => api.routines.list(),
+  });
   const [open, setOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [selected, setSelected] = useState<string | null>(null);
@@ -45,7 +51,14 @@ export default function TreinosPage() {
             dayOfWeek: "Segunda",
             duration: "45 min",
             exercises: [
-              { name: "Agachamento", group: "Quadríceps", sets: 4, reps: "12", load: 40, rest: "60s" },
+              {
+                name: "Agachamento",
+                group: "Quadríceps",
+                sets: 4,
+                reps: "12",
+                load: 40,
+                rest: "60s",
+              },
               { name: "Supino", group: "Peitoral", sets: 4, reps: "10", load: 40, rest: "90s" },
             ],
           },
@@ -160,7 +173,9 @@ export default function TreinosPage() {
                     type="button"
                     onClick={() => setSelected(r.id)}
                     className={`w-full border-b border-line/70 px-4 py-3 text-left text-sm transition hover:bg-input ${
-                      (selected ?? data?.data?.[0]?.id) === r.id ? "bg-navy/5 font-semibold text-navy" : ""
+                      (selected ?? data?.data?.[0]?.id) === r.id
+                        ? "bg-navy/5 font-semibold text-navy"
+                        : ""
                     }`}
                   >
                     <p>{r.name}</p>
@@ -185,7 +200,8 @@ export default function TreinosPage() {
                   <h2 className="font-title text-xl font-bold text-navy">{selectedRoutine.name}</h2>
                   <p className="text-sm text-black/50">
                     {selectedRoutine.studentName} · {selectedRoutine.frequency}x/semana ·{" "}
-                    {selectedRoutine.completedSessions ?? 0}/{selectedRoutine.totalSessions ?? 0} sessões
+                    {selectedRoutine.completedSessions ?? 0}/{selectedRoutine.totalSessions ?? 0}{" "}
+                    sessões
                   </p>
                   {selectedRoutine.objective ? (
                     <p className="mt-2 text-sm text-black/60">{selectedRoutine.objective}</p>
@@ -281,17 +297,28 @@ export default function TreinosPage() {
                 >
                   <option value="">Selecione</option>
                   {(students?.data ?? []).map((s) => (
-                    <option key={s.id} value={s.id}>{s.name}</option>
+                    <option key={s.id} value={s.id}>
+                      {s.name}
+                    </option>
                   ))}
                 </select>
               </label>
               <label className="block">
                 <span className="ns-label">Nome da rotina</span>
-                <input required className="ns-input" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
+                <input
+                  required
+                  className="ns-input"
+                  value={form.name}
+                  onChange={(e) => setForm({ ...form, name: e.target.value })}
+                />
               </label>
               <label className="block">
                 <span className="ns-label">Objetivo</span>
-                <input className="ns-input" value={form.objective} onChange={(e) => setForm({ ...form, objective: e.target.value })} />
+                <input
+                  className="ns-input"
+                  value={form.objective}
+                  onChange={(e) => setForm({ ...form, objective: e.target.value })}
+                />
               </label>
               <label className="block">
                 <span className="ns-label">Frequência semanal</span>
@@ -309,7 +336,9 @@ export default function TreinosPage() {
               Será criado um Treino A inicial — edite os exercícios depois.
             </p>
             <div className="mt-5 flex justify-end gap-2">
-              <button type="button" className="ns-btn-ghost" onClick={() => setOpen(false)}>Cancelar</button>
+              <button type="button" className="ns-btn-ghost" onClick={() => setOpen(false)}>
+                Cancelar
+              </button>
               <button type="submit" className="ns-btn-primary" disabled={create.isPending}>
                 {create.isPending ? "Salvando..." : "Criar"}
               </button>
@@ -320,11 +349,17 @@ export default function TreinosPage() {
 
       {editOpen ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-          <form onSubmit={onSaveExercises} className="ns-card max-h-[90vh] w-full max-w-2xl overflow-y-auto p-6">
+          <form
+            onSubmit={onSaveExercises}
+            className="ns-card max-h-[90vh] w-full max-w-2xl overflow-y-auto p-6"
+          >
             <h2 className="font-title text-xl font-bold text-navy">Editar exercícios</h2>
             <div className="mt-4 space-y-3">
               {exercises.map((ex, idx) => (
-                <div key={idx} className="grid gap-2 rounded-xl border border-line bg-input/50 p-3 sm:grid-cols-6">
+                <div
+                  key={idx}
+                  className="grid gap-2 rounded-xl border border-line bg-input/50 p-3 sm:grid-cols-6"
+                >
                   <label className="block sm:col-span-2">
                     <span className="ns-label">Nome</span>
                     <input

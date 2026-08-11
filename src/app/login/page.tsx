@@ -62,9 +62,7 @@ export default function LoginPage() {
             </p>
           </div>
         </div>
-        <p className="mt-5 text-sm text-black/55">
-          Acesse o painel da consultoria
-        </p>
+        <p className="mt-5 text-sm text-black/55">Acesse o painel da consultoria</p>
 
         <form onSubmit={onSubmit} className="mt-7 space-y-4">
           <label className="block">
@@ -100,7 +98,11 @@ export default function LoginPage() {
             </p>
           ) : null}
 
-          <button type="submit" disabled={loading} className="ns-btn-primary w-full justify-center py-3">
+          <button
+            type="submit"
+            disabled={loading}
+            className="ns-btn-primary w-full justify-center py-3"
+          >
             {loading ? "Entrando..." : "Entrar"}
           </button>
         </form>

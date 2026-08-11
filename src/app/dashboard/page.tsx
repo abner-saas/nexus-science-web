@@ -56,10 +56,18 @@ export default function DashboardPage() {
         <>
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             <Kpi label="Alunos Ativos" value={String(s?.active ?? 0)} />
-            <Kpi label="MRR" value={formatCurrency(m?.mrr ?? s?.mrr ?? 0)} hint="Receita recorrente" />
+            <Kpi
+              label="MRR"
+              value={formatCurrency(m?.mrr ?? s?.mrr ?? 0)}
+              hint="Receita recorrente"
+            />
             <Kpi label="Ticket Médio" value={formatCurrency(m?.avgTicket ?? s?.avgTicket ?? 0)} />
             <Kpi label="Inadimplentes" value={String(s?.overdue ?? m?.overdueCount ?? 0)} />
-            <Kpi label="Em risco" value={String(s?.atRisk ?? m?.atRiskCount ?? 0)} hint="Score ≥ 60" />
+            <Kpi
+              label="Em risco"
+              value={String(s?.atRisk ?? m?.atRiskCount ?? 0)}
+              hint="Score ≥ 60"
+            />
             <Kpi label="Sem bio 7d" value={String(s?.noBio7d ?? 0)} />
             <Kpi label="Ausentes 14d" value={String(s?.absent14d ?? 0)} />
             <Kpi label="Total CRM" value={String(s?.total ?? 0)} />
@@ -70,11 +78,7 @@ export default function DashboardPage() {
               <p className="ns-kpi-label">Evolução financeira</p>
               <p className="mt-1 text-sm text-black/50">Receita mensal (R$)</p>
               <div className="mt-4">
-                <MiniBars
-                  values={series.map((x) => x.revenue)}
-                  color="#002060"
-                  height={120}
-                />
+                <MiniBars values={series.map((x) => x.revenue)} color="#002060" height={120} />
               </div>
               <div className="mt-2 flex flex-wrap gap-2 text-[11px] text-black/45">
                 {series.map((x) => (

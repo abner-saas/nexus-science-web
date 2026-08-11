@@ -17,8 +17,8 @@ Não precisa de Action de deploy: a integração nativa da Vercel com GitHub já
 4. Root Directory: `.` (raiz do repo)
 5. Adicione a variável de ambiente:
 
-| Name | Value (produção) |
-|------|------------------|
+| Name                  | Value (produção)             |
+| --------------------- | ---------------------------- |
 | `NEXT_PUBLIC_API_URL` | `https://api.seudominio.com` |
 
 6. Deploy

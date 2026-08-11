@@ -174,7 +174,11 @@ export default function SettingsPage() {
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex justify-end gap-2">
-                        <button type="button" className="ns-btn-ghost text-xs" onClick={() => openEdit(u)}>
+                        <button
+                          type="button"
+                          className="ns-btn-ghost text-xs"
+                          onClick={() => openEdit(u)}
+                        >
                           Editar
                         </button>
                         {u.id !== user?.id ? (
@@ -202,8 +206,9 @@ export default function SettingsPage() {
           </div>
 
           <p className="mt-3 text-xs text-black/45">
-            Treinadores só enxergam alunos com <code className="rounded bg-input px-1">trainerId</code>{" "}
-            igual ao próprio usuário. Ao desativar, o login é revogado na hora.
+            Treinadores só enxergam alunos com{" "}
+            <code className="rounded bg-input px-1">trainerId</code> igual ao próprio usuário. Ao
+            desativar, o login é revogado na hora.
           </p>
         </>
       )}
@@ -217,14 +222,27 @@ export default function SettingsPage() {
             <div className="mt-4 space-y-3">
               <label className="block">
                 <span className="ns-label">Nome</span>
-                <input required className="ns-input" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
+                <input
+                  required
+                  className="ns-input"
+                  value={form.name}
+                  onChange={(e) => setForm({ ...form, name: e.target.value })}
+                />
               </label>
               <label className="block">
                 <span className="ns-label">E-mail</span>
-                <input required type="email" className="ns-input" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
+                <input
+                  required
+                  type="email"
+                  className="ns-input"
+                  value={form.email}
+                  onChange={(e) => setForm({ ...form, email: e.target.value })}
+                />
               </label>
               <label className="block">
-                <span className="ns-label">{editing ? "Nova senha (opcional)" : "Senha temporária"}</span>
+                <span className="ns-label">
+                  {editing ? "Nova senha (opcional)" : "Senha temporária"}
+                </span>
                 <input
                   required={!editing}
                   minLength={8}

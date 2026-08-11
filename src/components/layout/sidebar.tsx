@@ -75,7 +75,11 @@ export function Sidebar() {
             onClick={() => setOpen(false)}
             className={cn("ns-nav-item mb-0.5", active && "ns-nav-item-active")}
           >
-            <Icon size={15} strokeWidth={active ? 2.25 : 1.8} color={active ? "#FFFFFF" : "#002060"} />
+            <Icon
+              size={15}
+              strokeWidth={active ? 2.25 : 1.8}
+              color={active ? "#FFFFFF" : "#002060"}
+            />
             {item.label}
           </Link>
         );
@@ -148,9 +152,7 @@ export function Sidebar() {
         <div className="border-t border-black/[0.08] p-2.5">
           <div className="mb-2 truncate px-3 py-1 text-sm">
             <p className="font-medium text-ink">{user?.name}</p>
-            <p className="text-[11px] text-black/45">
-              {user?.role ? ROLE_LABELS[user.role] : ""}
-            </p>
+            <p className="text-[11px] text-black/45">{user?.role ? ROLE_LABELS[user.role] : ""}</p>
           </div>
           {canAccess(user?.role, "/configuracoes") ? (
             <Link

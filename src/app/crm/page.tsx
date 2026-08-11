@@ -62,9 +62,7 @@ export default function CrmPage() {
         restrictions: form.restrictions || null,
         trainerId: form.trainerId || null,
       };
-      return editingId
-        ? api.students.update(editingId, body)
-        : api.students.create(body);
+      return editingId ? api.students.update(editingId, body) : api.students.create(body);
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["students"] });
@@ -249,9 +247,7 @@ export default function CrmPage() {
                       <td className="px-4 py-3">
                         <span
                           className={
-                            (s.risk ?? 0) >= 60
-                              ? "font-semibold text-danger"
-                              : "text-black/70"
+                            (s.risk ?? 0) >= 60 ? "font-semibold text-danger" : "text-black/70"
                           }
                         >
                           {s.risk ?? 0}
@@ -346,7 +342,9 @@ export default function CrmPage() {
                   onChange={(e) => setForm((f) => ({ ...f, status: e.target.value }))}
                 >
                   {["Ativo", "Pausado", "Inadimplente", "Cancelado"].map((s) => (
-                    <option key={s} value={s}>{s}</option>
+                    <option key={s} value={s}>
+                      {s}
+                    </option>
                   ))}
                 </select>
               </label>
@@ -396,7 +394,14 @@ export default function CrmPage() {
                 <span />
               )}
               <div className="flex gap-2">
-                <button type="button" onClick={() => { setOpen(false); setEditingId(null); }} className="ns-btn-ghost">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setOpen(false);
+                    setEditingId(null);
+                  }}
+                  className="ns-btn-ghost"
+                >
                   Cancelar
                 </button>
                 <button type="submit" disabled={save.isPending} className="ns-btn-primary">
@@ -405,9 +410,7 @@ export default function CrmPage() {
               </div>
             </div>
             {save.isError ? (
-              <p className="mt-3 text-sm text-danger">
-                {(save.error as Error).message}
-              </p>
+              <p className="mt-3 text-sm text-danger">{(save.error as Error).message}</p>
             ) : null}
           </form>
         </div>

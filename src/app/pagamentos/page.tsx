@@ -8,12 +8,27 @@ import { formatCurrency } from "@/lib/utils";
 import { useAuthStore } from "@/store/auth";
 
 const REGUA = [
-  { day: "D-7", label: "7 dias antes", action: "Notificação preventiva", channels: ["WhatsApp", "E-mail"] },
+  {
+    day: "D-7",
+    label: "7 dias antes",
+    action: "Notificação preventiva",
+    channels: ["WhatsApp", "E-mail"],
+  },
   { day: "D-3", label: "3 dias antes", action: "Segundo aviso", channels: ["WhatsApp", "E-mail"] },
-  { day: "D-0", label: "Dia do vencimento", action: "Cobrança / PIX", channels: ["E-mail", "Push"] },
+  {
+    day: "D-0",
+    label: "Dia do vencimento",
+    action: "Cobrança / PIX",
+    channels: ["E-mail", "Push"],
+  },
   { day: "D+1", label: "1 dia após", action: "Inadimplência", channels: ["WhatsApp", "E-mail"] },
   { day: "D+7", label: "7 dias após", action: "Bloqueio do app", channels: ["E-mail"] },
-  { day: "D+15", label: "15 dias após", action: "Cancelamento (configurável)", channels: ["E-mail"] },
+  {
+    day: "D+15",
+    label: "15 dias após",
+    action: "Cancelamento (configurável)",
+    channels: ["E-mail"],
+  },
 ];
 
 export default function PagamentosPage() {
@@ -199,7 +214,9 @@ export default function PagamentosPage() {
                 >
                   <option value="">Selecione</option>
                   {(students.data?.data ?? []).map((s) => (
-                    <option key={s.id} value={s.id}>{s.name}</option>
+                    <option key={s.id} value={s.id}>
+                      {s.name}
+                    </option>
                   ))}
                 </select>
               </label>

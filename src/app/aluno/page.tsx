@@ -65,8 +65,8 @@ export default function AlunoAppPage() {
         <div className="ns-card max-w-md p-6">
           <p className="font-title text-lg font-bold text-navy">App do Aluno</p>
           <p className="mt-2 text-sm text-black/55">
-            Você está logado como <strong>{user.role}</strong>. O app do aluno
-            exige papel STUDENT vinculado a um aluno no CRM.
+            Você está logado como <strong>{user.role}</strong>. O app do aluno exige papel STUDENT
+            vinculado a um aluno no CRM.
           </p>
           <Link href="/dashboard" className="ns-btn-secondary mt-4 inline-flex">
             Ir ao painel
@@ -102,7 +102,9 @@ export default function AlunoAppPage() {
                 <div key={t.id} className="rounded-xl border border-line bg-input p-3">
                   <div className="flex items-center justify-between gap-2">
                     <div>
-                      <p className="font-semibold">{t.code} — {t.name}</p>
+                      <p className="font-semibold">
+                        {t.code} — {t.name}
+                      </p>
                       <p className="text-xs text-black/45">{t.focus}</p>
                     </div>
                     <button
@@ -153,7 +155,11 @@ export default function AlunoAppPage() {
               </label>
             ))}
           </div>
-          <button type="submit" className="ns-btn-primary mt-4 w-full justify-center" disabled={saveBio.isPending}>
+          <button
+            type="submit"
+            className="ns-btn-primary mt-4 w-full justify-center"
+            disabled={saveBio.isPending}
+          >
             {saveBio.isPending ? "Salvando..." : saveBio.isSuccess ? "Salvo!" : "Registrar"}
           </button>
         </form>

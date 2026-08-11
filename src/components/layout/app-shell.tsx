@@ -86,18 +86,14 @@ export function AppShell({
             <h1 className="truncate font-title text-lg font-bold leading-tight text-ink md:text-[18px]">
               {title}
             </h1>
-            {subtitle ? (
-              <p className="mt-0.5 truncate text-sm text-black/60">{subtitle}</p>
-            ) : null}
+            {subtitle ? <p className="mt-0.5 truncate text-sm text-black/60">{subtitle}</p> : null}
           </div>
           <div className="flex shrink-0 items-center gap-2">
             {actions}
             <LiveDate />
           </div>
         </header>
-        <main className="section-enter flex-1 overflow-y-auto px-4 py-6 md:px-6">
-          {children}
-        </main>
+        <main className="section-enter flex-1 overflow-y-auto px-4 py-6 md:px-6">{children}</main>
       </div>
     </div>
   );

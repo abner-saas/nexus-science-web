@@ -108,13 +108,19 @@ export default function PlansPage() {
           {(data?.data ?? []).map((plan) => {
             const color = TIER_COLOR[plan.tier] ?? "#002060";
             return (
-              <div key={plan.id} className="ns-card p-5" style={{ borderTop: `4px solid ${color}` }}>
+              <div
+                key={plan.id}
+                className="ns-card p-5"
+                style={{ borderTop: `4px solid ${color}` }}
+              >
                 <div className="flex items-center justify-between gap-2">
                   <div className="flex items-center gap-2">
                     <span className="h-2.5 w-2.5 rounded-full" style={{ background: color }} />
                     <h3 className="font-display text-lg font-bold text-ink">{plan.name}</h3>
                   </div>
-                  <span className={`text-xs font-semibold ${plan.active ? "text-success" : "text-danger"}`}>
+                  <span
+                    className={`text-xs font-semibold ${plan.active ? "text-success" : "text-danger"}`}
+                  >
                     {plan.active ? "Ativo" : "Inativo"}
                   </span>
                 </div>
@@ -140,7 +146,11 @@ export default function PlansPage() {
                 ) : null}
                 {canWrite ? (
                   <div className="mt-4 flex flex-wrap gap-2">
-                    <button type="button" className="ns-btn-ghost text-xs" onClick={() => openEdit(plan)}>
+                    <button
+                      type="button"
+                      className="ns-btn-ghost text-xs"
+                      onClick={() => openEdit(plan)}
+                    >
                       Editar
                     </button>
                     <button
@@ -178,11 +188,20 @@ export default function PlansPage() {
             <div className="mt-4 space-y-3">
               <label className="block">
                 <span className="ns-label">Nome</span>
-                <input required className="ns-input" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
+                <input
+                  required
+                  className="ns-input"
+                  value={form.name}
+                  onChange={(e) => setForm({ ...form, name: e.target.value })}
+                />
               </label>
               <label className="block">
                 <span className="ns-label">Tier</span>
-                <select className="ns-input" value={form.tier} onChange={(e) => setForm({ ...form, tier: e.target.value })}>
+                <select
+                  className="ns-input"
+                  value={form.tier}
+                  onChange={(e) => setForm({ ...form, tier: e.target.value })}
+                >
                   {["Bronze", "Silver", "Gold", "Custom"].map((t) => (
                     <option key={t}>{t}</option>
                   ))}
@@ -190,15 +209,28 @@ export default function PlansPage() {
               </label>
               <label className="block">
                 <span className="ns-label">Valor (ex: 297.00)</span>
-                <input required className="ns-input" value={form.value} onChange={(e) => setForm({ ...form, value: e.target.value })} />
+                <input
+                  required
+                  className="ns-input"
+                  value={form.value}
+                  onChange={(e) => setForm({ ...form, value: e.target.value })}
+                />
               </label>
               <label className="block">
                 <span className="ns-label">Benefícios (separados por vírgula)</span>
-                <input className="ns-input" value={form.benefits} onChange={(e) => setForm({ ...form, benefits: e.target.value })} />
+                <input
+                  className="ns-input"
+                  value={form.benefits}
+                  onChange={(e) => setForm({ ...form, benefits: e.target.value })}
+                />
               </label>
               <label className="block">
                 <span className="ns-label">Checkout URL</span>
-                <input className="ns-input" value={form.checkoutUrl} onChange={(e) => setForm({ ...form, checkoutUrl: e.target.value })} />
+                <input
+                  className="ns-input"
+                  value={form.checkoutUrl}
+                  onChange={(e) => setForm({ ...form, checkoutUrl: e.target.value })}
+                />
               </label>
               <label className="flex items-center gap-2 text-sm">
                 <input
@@ -210,7 +242,9 @@ export default function PlansPage() {
               </label>
             </div>
             <div className="mt-5 flex justify-end gap-2">
-              <button type="button" className="ns-btn-ghost" onClick={() => setOpen(false)}>Cancelar</button>
+              <button type="button" className="ns-btn-ghost" onClick={() => setOpen(false)}>
+                Cancelar
+              </button>
               <button type="submit" className="ns-btn-primary" disabled={save.isPending}>
                 {save.isPending ? "Salvando..." : "Salvar"}
               </button>

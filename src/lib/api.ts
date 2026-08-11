@@ -158,7 +158,10 @@ export const api = {
     create: (body: Record<string, unknown>) =>
       request<{ data: Student }>("/students", { method: "POST", body: JSON.stringify(body) }),
     update: (id: string, body: Record<string, unknown>) =>
-      request<{ data: Student }>(`/students/${id}`, { method: "PATCH", body: JSON.stringify(body) }),
+      request<{ data: Student }>(`/students/${id}`, {
+        method: "PATCH",
+        body: JSON.stringify(body),
+      }),
     remove: (id: string) => request<void>(`/students/${id}`, { method: "DELETE" }),
   },
 
@@ -173,9 +176,7 @@ export const api = {
 
   routines: {
     list: (studentId?: string) =>
-      request<{ data: Routine[] }>(
-        `/routines${studentId ? `?studentId=${studentId}` : ""}`,
-      ),
+      request<{ data: Routine[] }>(`/routines${studentId ? `?studentId=${studentId}` : ""}`),
     create: (body: Record<string, unknown>) =>
       request<{ data: Routine }>("/routines", { method: "POST", body: JSON.stringify(body) }),
     update: (id: string, body: Record<string, unknown>) =>
@@ -359,7 +360,6 @@ export const api = {
           }>;
         };
       }>("/dashboard/summary"),
-    recompute: () =>
-      request<{ data: unknown }>("/dashboard/recompute", { method: "POST" }),
+    recompute: () => request<{ data: unknown }>("/dashboard/recompute", { method: "POST" }),
   },
 };
