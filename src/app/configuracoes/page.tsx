@@ -115,7 +115,7 @@ export default function SettingsPage() {
               ["Papel", user?.role ? ROLE_LABELS[user.role] : "—"],
             ].map(([label, value]) => (
               <label key={label} className="block">
-                <span className="ns-label uppercase tracking-[0.06em] !text-[11px] !text-black/42">
+                <span className="ns-label uppercase tracking-[0.06em] text-[11px]! text-black/42!">
                   {label}
                 </span>
                 <input className="ns-input" defaultValue={value} readOnly />
@@ -207,7 +207,7 @@ export default function SettingsPage() {
 
           <p className="mt-3 text-xs text-black/45">
             Treinadores só enxergam alunos com{" "}
-            <code className="rounded bg-input px-1">trainerId</code> igual ao próprio usuário. Ao
+            <code className="rounded-sm bg-input px-1">trainerId</code> igual ao próprio usuário. Ao
             desativar, o login é revogado na hora.
           </p>
         </>

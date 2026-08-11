@@ -1,112 +1,161 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-:root {
-  --navy: #002060;
-  --maroon: #800000;
-  --surface: #f4f5f7;
-  --input: #f1f3f6;
-  --card: #ffffff;
-  --line: #e3e6ea;
-  --line-light: #edeff2;
-  --ink: #1a1f2b;
-  --success: #10b981;
-  --danger: #dc2626;
-  --warning: #d97706;
-  --primary-dim: rgba(0, 32, 96, 0.08);
-  --primary-glow: rgba(0, 32, 96, 0.2);
-}
+@theme {
+  --color-navy: #002060;
+  --color-maroon: #800000;
+  --color-surface: #f4f5f7;
+  --color-input: #f1f3f6;
+  --color-card: #ffffff;
+  --color-line: #e3e6ea;
+  --color-line-light: #edeff2;
+  --color-ink: #1a1f2b;
+  --color-muted: #6b7280;
+  --color-success: #10b981;
+  --color-danger: #dc2626;
+  --color-warning: #d97706;
+  --color-info: #2563eb;
+  --color-secondary: #475569;
 
-html,
-body {
-  min-height: 100%;
-}
+  --font-brand: var(--font-bebas), sans-serif;
+  --font-title: var(--font-montserrat), sans-serif;
+  --font-display: var(--font-syne), sans-serif;
+  --font-body: var(--font-dm-sans), sans-serif;
+  --font-impact: var(--font-bebas), sans-serif;
 
-body {
-  color: var(--ink);
-  background: var(--surface);
-  font-family: var(--font-dm-sans), sans-serif;
-  font-size: 14px;
-  line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
+  --shadow-card: 0 1px 2px rgba(16, 24, 40, 0.04), 0 8px 24px rgba(16, 24, 40, 0.04);
+  --shadow-nav: 0 2px 12px rgba(0, 32, 96, 0.25);
+  --shadow-btn: 0 3px 14px rgba(0, 32, 96, 0.3);
+
+  --radius-nav: 9px;
 }
 
-* {
-  box-sizing: border-box;
-}
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
 
-::selection {
-  background: rgba(0, 32, 96, 0.33);
-  color: #000;
-}
-
-::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
-}
-::-webkit-scrollbar-track {
-  background: var(--surface);
-}
-::-webkit-scrollbar-thumb {
-  background: var(--line-light);
-  border-radius: 4px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #9ca3af;
-}
-
-@layer components {
-  .ns-nav-item {
-    @apply flex w-full items-center gap-2.5 rounded-nav border border-transparent px-3 py-[9px] text-[13px] font-medium text-black/65 no-underline transition-all;
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
   }
-  .ns-nav-item:hover {
+}
+
+@utility ns-nav-item {
+  @apply flex w-full items-center gap-2.5 rounded-nav border border-transparent px-3 py-[9px] text-[13px] font-medium text-black/65 no-underline transition-all;
+  &:hover {
     background: rgba(0, 32, 96, 0.06);
     color: #002060;
   }
-  .ns-nav-item-active {
-    @apply font-bold text-white shadow-nav;
-    background: #002060;
-  }
-  .ns-nav-item-active svg {
+}
+
+@utility ns-nav-item-active {
+  @apply font-bold text-white shadow-nav;
+  background: #002060;
+  & svg {
     stroke: #ffffff !important;
   }
+}
 
-  .ns-btn {
-    @apply inline-flex items-center gap-1.5 rounded-lg px-4 py-2 text-[13px] font-semibold transition;
-  }
-  .ns-btn-primary {
-    @apply ns-btn bg-navy text-white shadow-btn hover:bg-navy/90 disabled:opacity-60;
-  }
-  .ns-btn-secondary {
-    @apply ns-btn border border-line bg-white text-navy hover:bg-input;
-  }
-  .ns-btn-ghost {
-    @apply ns-btn text-black/60 hover:bg-black/[0.03];
-  }
+@utility ns-btn {
+  @apply inline-flex items-center gap-1.5 rounded-lg px-4 py-2 text-[13px] font-semibold transition;
+}
 
-  .ns-card {
-    @apply rounded-2xl border border-line bg-white shadow-card;
-  }
+@utility ns-btn-primary {
+  @apply ns-btn bg-navy text-white shadow-btn hover:bg-navy/90 disabled:opacity-60;
+}
 
-  .ns-input {
-    @apply w-full rounded-xl border border-line bg-input px-3 py-2.5 text-sm text-ink outline-none transition;
-  }
-  .ns-input:focus {
+@utility ns-btn-secondary {
+  @apply ns-btn border border-line bg-white text-navy hover:bg-input;
+}
+
+@utility ns-btn-ghost {
+  @apply ns-btn text-black/60 hover:bg-black/3;
+}
+
+@utility ns-card {
+  @apply rounded-2xl border border-line bg-white shadow-card;
+}
+
+@utility ns-input {
+  @apply w-full rounded-xl border border-line bg-input px-3 py-2.5 text-sm text-ink outline-hidden transition;
+  &:focus {
     border-color: #002060;
     box-shadow: 0 0 0 3px var(--primary-glow);
   }
+}
 
-  .ns-label {
-    @apply mb-1.5 block text-sm text-black/60;
+@utility ns-label {
+  @apply mb-1.5 block text-sm text-black/60;
+}
+
+@utility ns-kpi-label {
+  @apply text-[11px] font-semibold uppercase tracking-[0.14em] text-black/45;
+}
+
+@utility ns-section-title {
+  @apply font-title text-lg font-bold tracking-tight text-ink;
+}
+
+@layer utilities {
+  :root {
+    --navy: #002060;
+    --maroon: #800000;
+    --surface: #f4f5f7;
+    --input: #f1f3f6;
+    --card: #ffffff;
+    --line: #e3e6ea;
+    --line-light: #edeff2;
+    --ink: #1a1f2b;
+    --success: #10b981;
+    --danger: #dc2626;
+    --warning: #d97706;
+    --primary-dim: rgba(0, 32, 96, 0.08);
+    --primary-glow: rgba(0, 32, 96, 0.2);
   }
 
-  .ns-kpi-label {
-    @apply text-[11px] font-semibold uppercase tracking-[0.14em] text-black/45;
+  html,
+  body {
+    min-height: 100%;
   }
 
-  .ns-section-title {
-    @apply font-title text-lg font-bold tracking-tight text-ink;
+  body {
+    color: var(--ink);
+    background: var(--surface);
+    font-family: var(--font-dm-sans), sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  ::selection {
+    background: rgba(0, 32, 96, 0.33);
+    color: #000;
+  }
+
+  ::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--surface);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--line-light);
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #9ca3af;
   }
 }
 

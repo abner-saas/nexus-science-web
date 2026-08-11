@@ -6,13 +6,16 @@ See also `../CLAUDE.md` for workspace-level context (this is one of two repos in
 
 ## Stack
 
-Next.js 14.2 (App Router) + React 18 + TypeScript + Tailwind CSS 3 + Zustand (client state, `src/store/auth.ts`) + TanStack Query (server state).
+Next.js 16 (App Router, Turbopack by default) + React 19 + TypeScript + Tailwind CSS 4 + Zustand (client state, `src/store/auth.ts`) + TanStack Query (server state).
+
+ESLint is pinned to `^9`, not the latest `10` — `eslint-config-next`'s bundled `eslint-plugin-react@7.37.5` only declares peer support through ESLint `^9.7` and crashes on 10 (`context.getFilename is not a function`). Revisit once eslint-plugin-react catches up.
 
 ## Commands
 
 - `npm run dev` — Next dev server
 - `npm run build` — production build
-- `npm run lint` — `next lint` (`next/core-web-vitals` + `next/typescript`, no custom rules)
+- `npm run lint` — ESLint CLI directly (`next lint` was removed in Next 16); flat config in `eslint.config.mjs`
+- `npm run format` / `format:check` — Prettier
 - CI runs `npm run lint` then `npm run build` — no separate typecheck step (build covers it).
 
 ## Testing — no automated suite
@@ -23,7 +26,8 @@ No Jest/Vitest/Playwright/etc. Verification bar is `npm run lint` + `npm run bui
 
 - Path alias `@/*` → `./src/*`.
 - Pages live under `src/app/{aluno,avaliacao,biofeedback,configuracoes,crm,dashboard,financeiro,ia,login,pagamentos,planos,retencao,treinos}/page.tsx` (App Router).
-- Custom brand theme in `tailwind.config.ts` (colors `navy #002060`, `maroon #800000`; brand/title/display/body/impact font families) — use existing tokens rather than ad hoc colors.
+- Custom brand theme lives in `src/app/globals.css` under `@theme` (CSS-first config, Tailwind v4 — there is no `tailwind.config.ts` anymore): colors `navy #002060`, `maroon #800000`; brand/title/display/body/impact font families. Use existing tokens rather than ad hoc colors.
+- Custom component classes (`ns-btn`, `ns-card`, `ns-input`, etc.) are defined via `@utility` in `globals.css`, not `@layer components` (Tailwind v4 syntax).
 
 ## Environment variables
 
@@ -40,3 +44,13 @@ Vercel's native GitHub integration deploys on push to `main` — no dedicated Gi
 ## Git workflow
 
 Currently committing directly to `main`. Once moved to a service-account setup, this becomes feature branches merged to `main` via service-account-approved PRs — check current practice if unsure which phase you're in.
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->

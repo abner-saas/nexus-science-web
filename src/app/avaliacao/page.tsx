@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AppShell } from "@/components/layout/app-shell";
 import { MiniLine } from "@/components/ui/charts";
@@ -12,7 +12,8 @@ export default function AvaliacaoPage() {
     queryKey: ["students"],
     queryFn: () => api.students.list(),
   });
-  const [studentId, setStudentId] = useState("");
+  const [selectedStudentId, setStudentId] = useState("");
+  const studentId = selectedStudentId || students?.data?.[0]?.id || "";
   const [form, setForm] = useState({
     date: new Date().toISOString().slice(0, 10),
     weight: "",
@@ -21,10 +22,6 @@ export default function AvaliacaoPage() {
     muscle: "",
     waist: "",
   });
-
-  useEffect(() => {
-    if (!studentId && students?.data?.[0]) setStudentId(students.data[0].id);
-  }, [students, studentId]);
 
   const { data, isLoading } = useQuery({
     queryKey: ["assessments", studentId],

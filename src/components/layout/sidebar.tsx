@@ -62,7 +62,7 @@ export function Sidebar() {
 
   const nav = (
     <nav className="flex flex-1 flex-col px-2.5 py-2.5">
-      <p className="px-1 pb-1.5 pt-2 text-[10px] font-bold uppercase tracking-[0.1em] text-black/30">
+      <p className="px-1 pb-1.5 pt-2 text-[10px] font-bold uppercase tracking-widest text-black/30">
         Menu Principal
       </p>
       {visibleNav.map((item) => {
@@ -149,7 +149,7 @@ export function Sidebar() {
 
         {nav}
 
-        <div className="border-t border-black/[0.08] p-2.5">
+        <div className="border-t border-black/8 p-2.5">
           <div className="mb-2 truncate px-3 py-1 text-sm">
             <p className="font-medium text-ink">{user?.name}</p>
             <p className="text-[11px] text-black/45">{user?.role ? ROLE_LABELS[user.role] : ""}</p>

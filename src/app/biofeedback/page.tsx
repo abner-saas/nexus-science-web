@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AppShell } from "@/components/layout/app-shell";
 import { MiniLine } from "@/components/ui/charts";
@@ -12,7 +12,8 @@ export default function BiofeedbackPage() {
     queryKey: ["students"],
     queryFn: () => api.students.list(),
   });
-  const [studentId, setStudentId] = useState("");
+  const [selectedStudentId, setStudentId] = useState("");
+  const studentId = selectedStudentId || students?.data?.[0]?.id || "";
   const [insight, setInsight] = useState<string | null>(null);
   const [form, setForm] = useState({
     date: new Date().toISOString().slice(0, 10),
@@ -24,10 +25,6 @@ export default function BiofeedbackPage() {
     hydration: "2.5",
     weight: "",
   });
-
-  useEffect(() => {
-    if (!studentId && students?.data?.[0]) setStudentId(students.data[0].id);
-  }, [students, studentId]);
 
   const { data, isLoading } = useQuery({
     queryKey: ["bio", studentId],

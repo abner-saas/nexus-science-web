@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { FormEvent, useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AppShell } from "@/components/layout/app-shell";
 import { api, type Routine } from "@/lib/api";
@@ -118,10 +118,6 @@ export default function TreinosPage() {
     () => (data?.data ?? []).find((r) => r.id === selected) ?? data?.data?.[0] ?? null,
     [data, selected],
   );
-
-  useEffect(() => {
-    if (selectedRoutine && !selected) setSelected(selectedRoutine.id);
-  }, [selectedRoutine, selected]);
 
   function onSubmit(e: FormEvent) {
     e.preventDefault();
