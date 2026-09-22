@@ -14,7 +14,6 @@ export const ROLE_NAV: Record<AuthUser["role"], string[]> = {
     "/planos",
     "/ia",
     "/configuracoes",
-    "/aluno",
   ],
   TRAINER: [
     "/dashboard",

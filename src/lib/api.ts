@@ -224,6 +224,10 @@ export const api = {
           margin: number;
           mrr: number;
           arr: number;
+          overdueAmount?: number;
+          overdueCount?: number;
+          revenueByCategory?: Array<{ category: string; total: number }>;
+          expenseByCategory?: Array<{ category: string; total: number }>;
           series: Array<{ month: string; revenue: number; expenses: number; profit: number }>;
         };
       }>("/finance/summary"),
@@ -236,6 +240,7 @@ export const api = {
           description: string | null;
           amount: string;
           date: string;
+          method?: string | null;
         }>;
       }>("/finance/transactions"),
     createTx: (body: Record<string, unknown>) =>
