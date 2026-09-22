@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { GoogleSignInButton } from "@/components/ui/google-sign-in-button";
+import { trackEvent } from "@/lib/analytics";
 import { startGoogleSignIn } from "@/lib/auth-client";
 import { TRAINER_NAME } from "@/lib/contact";
 
@@ -22,6 +23,7 @@ export function PreviewGoogleButton({ label }: { label: string }) {
   }, []);
 
   async function onGoogle() {
+    trackEvent("google_preview_click");
     setBusy(true);
     try {
       await startGoogleSignIn();
@@ -32,11 +34,17 @@ export function PreviewGoogleButton({ label }: { label: string }) {
 
   return (
     <div>
-      <GoogleSignInButton status={status} busy={busy} onClick={onGoogle} label={label} className="w-full" />
+      <GoogleSignInButton
+        status={status}
+        busy={busy}
+        onClick={onGoogle}
+        label={label}
+        className="w-full"
+      />
       {status === "ready" ? (
         <p className="mt-2 text-xs text-black/45">
-          O Google só identifica o e-mail. Não abre matrícula nem cobrança — isso o {TRAINER_NAME.split(" ")[0]}{" "}
-          libera depois do combinado.
+          O Google só identifica o e-mail. Não abre matrícula nem cobrança — isso o{" "}
+          {TRAINER_NAME.split(" ")[0]} libera depois do combinado.
         </p>
       ) : null}
     </div>

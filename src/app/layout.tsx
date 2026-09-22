@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Syne, DM_Sans, Bebas_Neue, Montserrat } from "next/font/google";
 import { Providers } from "@/components/providers";
+import { SiteTelemetry } from "@/components/site/site-telemetry";
+import { VercelMetrics } from "@/components/site/vercel-metrics";
 import { SITE_URL } from "@/lib/site";
 import "./globals.css";
 
@@ -62,6 +64,8 @@ export default function RootLayout({
         className={`${syne.variable} ${dmSans.variable} ${bebas.variable} ${montserrat.variable} font-body antialiased`}
       >
         <Providers>{children}</Providers>
+        <VercelMetrics />
+        <SiteTelemetry />
       </body>
     </html>
   );

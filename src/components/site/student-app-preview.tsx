@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Dumbbell, HeartPulse, Ruler, Wallet } from "lucide-react";
+import { trackEvent, type PreviewSourcePage, type PreviewTabName } from "@/lib/analytics";
 
-export type PreviewTab = "treino" | "bio" | "pagamentos" | "avaliacao";
+export type PreviewTab = PreviewTabName;
 
 const TABS = [
   ["treino", "Treino", Dumbbell],
@@ -75,7 +76,9 @@ function TreinoPane() {
           ))}
         </ul>
       </div>
-      <DemoHint>Prévia: o botão não confirma sessão. No app real, isso conta frequência no painel.</DemoHint>
+      <DemoHint>
+        Prévia: o botão não confirma sessão. No app real, isso conta frequência no painel.
+      </DemoHint>
     </section>
   );
 }
@@ -95,7 +98,10 @@ function BioPane() {
       <button type="button" className="ns-btn-primary mt-4 w-full justify-center" disabled>
         Registrar
       </button>
-      <DemoHint>Prévia: valores de exemplo. No app, energia, sono e dor alimentam o alerta de 7 dias sem registro.</DemoHint>
+      <DemoHint>
+        Prévia: valores de exemplo. No app, energia, sono e dor alimentam o alerta de 7 dias sem
+        registro.
+      </DemoHint>
     </section>
   );
 }
@@ -125,8 +131,8 @@ function PagamentosPane() {
         </tbody>
       </table>
       <p className="px-4 py-3 text-xs text-maroon">
-        Números inventados para layout. Cobrança real usa Pix, cartão ou boleto (Asaas), depois que o
-        plano é combinado com o Abner.
+        Números inventados para layout. Cobrança real usa Pix, cartão ou boleto (Asaas), depois que
+        o plano é combinado com o Abner.
       </p>
     </section>
   );
@@ -156,7 +162,9 @@ function AvaliacaoPane() {
           ))}
         </tbody>
       </table>
-      <DemoHint>Prévia: série fictícia. No app entram as medições e fotos de progresso da consultoria.</DemoHint>
+      <DemoHint>
+        Prévia: série fictícia. No app entram as medições e fotos de progresso da consultoria.
+      </DemoHint>
     </section>
   );
 }
@@ -164,12 +172,22 @@ function AvaliacaoPane() {
 export function StudentAppPreview({
   greeting = "Olá, aluno",
   variant = "embedded",
+  sourcePage = "homepage",
 }: {
   greeting?: string;
   variant?: "embedded" | "page";
+  sourcePage?: PreviewSourcePage;
 }) {
   const [tab, setTab] = useState<PreviewTab>("treino");
+  const tabRef = useRef(tab);
   const shell = variant === "page" ? "min-h-[calc(100vh-8rem)] bg-input pb-24" : "bg-input pb-16";
+
+  function onSelect(next: PreviewTab) {
+    if (tabRef.current === next) return;
+    tabRef.current = next;
+    setTab(next);
+    trackEvent("preview_tab_switch", { tab_name: next, source_page: sourcePage });
+  }
 
   return (
     <div className={shell}>
@@ -205,7 +223,7 @@ export function StudentAppPreview({
             <button
               key={id}
               type="button"
-              onClick={() => setTab(id)}
+              onClick={() => onSelect(id)}
               aria-current={tab === id ? "page" : undefined}
               className={`flex flex-col items-center gap-0.5 py-2.5 text-[11px] font-semibold ${
                 tab === id ? "text-navy" : "text-black/40"

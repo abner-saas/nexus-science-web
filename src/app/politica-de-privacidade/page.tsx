@@ -12,9 +12,9 @@ export default function PrivacidadePage() {
   return (
     <LegalArticle title="Política de privacidade" updated="22/09/2026">
       <p>
-        Esta página descreve o tratamento de dados pessoais no {BRAND_NAME}, plataforma de gestão
-        da consultoria de {TRAINER_NAME} ({BUSINESS_CITY}). Não inventamos CNPJ nem endereço:
-        quando o cliente publicar identificação fiscal, ela entra no rodapé e aqui.
+        Esta página descreve o tratamento de dados pessoais no {BRAND_NAME}, plataforma de gestão da
+        consultoria de {TRAINER_NAME} ({BUSINESS_CITY}). Não inventamos CNPJ nem endereço: quando o
+        cliente publicar identificação fiscal, ela entra no rodapé e aqui.
       </p>
       <h2 className="font-title text-base font-bold text-navy">Quem trata os dados</h2>
       <p>
@@ -24,8 +24,8 @@ export default function PrivacidadePage() {
       <h2 className="font-title text-base font-bold text-navy">O que coletamos</h2>
       <ul className="list-disc space-y-1 pl-5">
         <li>
-          Equipe e alunos matriculados: nome, e-mail, senha (hash) ou login Google, telefone,
-          dados de treino, biofeedback, avaliação física e pagamentos.
+          Equipe e alunos matriculados: nome, e-mail, senha (hash) ou login Google, telefone, dados
+          de treino, biofeedback, avaliação física e pagamentos.
         </li>
         <li>
           Restrições/lesões e demais campos de saúde: criptografados em repouso. Fotos de avaliação
@@ -39,20 +39,33 @@ export default function PrivacidadePage() {
       <h2 className="font-title text-base font-bold text-navy">Para que usamos</h2>
       <p>
         Operar a consultoria: prescrição, registro de treino, biofeedback, avaliação, cobrança
-        (Asaas) e login. Não usamos esses dados para anúncio de terceiros neste site — não há
-        pixel de marketing instalado neste momento.
+        (Asaas) e login. Cadastro de aluno não entra em anúncio. Não há pixel de marketing.
       </p>
       <h2 className="font-title text-base font-bold text-navy">Com quem compartilhamos</h2>
       <ul className="list-disc space-y-1 pl-5">
         <li>Google, se você entra com OAuth (autenticação).</li>
         <li>Asaas, quando há cobrança de aluno matriculado (Pix, cartão, boleto).</li>
         <li>Hospedagem do site (Vercel) e da API (servidor da consultoria).</li>
+        <li>
+          Vercel Analytics: página visitada e desempenho do site, sem cookie e sem dados de
+          cadastro.
+        </li>
+        <li>
+          Google Analytics 4, somente se você aceitar a medição: caminho da página e cliques de
+          interesse, sem nome, e-mail, telefone ou texto de WhatsApp.
+        </li>
       </ul>
+      <h2 className="font-title text-base font-bold text-navy">Medição do site público</h2>
+      <p>
+        A medição vale para a página inicial, a prévia do app e as páginas legais. O painel da
+        equipe e o app do aluno matriculado não enviam página ao Google. O detalhe dos cookies está
+        na política de cookies.
+      </p>
       <h2 className="font-title text-base font-bold text-navy">Seus direitos (LGPD)</h2>
       <p>
-        Acesso, correção, exclusão e informação sobre o tratamento. Pedidos: fale com{" "}
-        {TRAINER_NAME} pelos canais do rodapé. Alunos matriculados podem pedir a exclusão do
-        cadastro ao responsável da consultoria.
+        Acesso, correção, exclusão e informação sobre o tratamento. Pedidos: fale com {TRAINER_NAME}{" "}
+        pelos canais do rodapé. Alunos matriculados podem pedir a exclusão do cadastro ao
+        responsável da consultoria.
       </p>
     </LegalArticle>
   );

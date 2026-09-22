@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { BrandMark } from "@/components/site/brand-mark";
+import { TrackedLink } from "@/components/site/tracked-link";
 import { BUSINESS_CITY, BUSINESS_LINE, BRAND_NAME } from "@/lib/site";
 import { TRAINER_NAME, trainerInstagram, trainerWhatsApp } from "@/lib/contact";
 
@@ -14,21 +15,27 @@ export function SiteHeader() {
   return (
     <header className="border-b border-line bg-white">
       <div className="mx-auto flex h-[82px] max-w-5xl items-center justify-between px-4 md:px-6">
-        <Link href="/" className="min-w-0 text-ink no-underline" aria-label={`${BRAND_NAME} — início`}>
+        <Link
+          href="/"
+          className="min-w-0 text-ink no-underline"
+          aria-label={`${BRAND_NAME} — início`}
+        >
           <BrandMark />
         </Link>
         <nav className="flex items-center gap-2 text-sm" aria-label="Acesso">
-          <Link
+          <TrackedLink
             href="/login?as=aluno"
+            kind="aluno"
+            surface="header"
             className="px-2 text-navy/70 no-underline hover:text-navy"
-            aria-label="Já sou aluno"
+            ariaLabel="Já sou aluno"
           >
             <span className="sm:hidden">Aluno</span>
             <span className="hidden sm:inline">Já sou aluno</span>
-          </Link>
-          <Link href="/login" className="ns-btn-secondary">
+          </TrackedLink>
+          <TrackedLink href="/login" kind="equipe" surface="header" className="ns-btn-secondary">
             Equipe
-          </Link>
+          </TrackedLink>
         </nav>
       </div>
     </header>
@@ -54,13 +61,23 @@ export function SiteFooter() {
             <Link href="/conhecer" className="text-navy no-underline hover:underline">
               App do aluno (prévia)
             </Link>
-            <Link href="/login?as=aluno" className="text-navy no-underline hover:underline">
+            <TrackedLink
+              href="/login?as=aluno"
+              kind="aluno"
+              surface="footer"
+              className="text-navy no-underline hover:underline"
+            >
               Entrar como aluno
-            </Link>
+            </TrackedLink>
             {wa ? (
-              <a href={wa} className="text-navy no-underline hover:underline">
+              <TrackedLink
+                href={wa}
+                kind="whatsapp"
+                location="footer"
+                className="text-navy no-underline hover:underline"
+              >
                 WhatsApp
-              </a>
+              </TrackedLink>
             ) : null}
             {ig ? (
               <a href={ig} className="text-navy no-underline hover:underline">
@@ -76,7 +93,8 @@ export function SiteFooter() {
         </div>
         <p className="mt-8 text-xs leading-relaxed text-black/45">
           {TRAINER_NAME} · {BUSINESS_CITY} · {BRAND_NAME}. CNPJ, razão social e endereço comercial
-          ainda não foram publicados neste site — entram no rodapé assim que o cliente disponibilizar.
+          ainda não foram publicados neste site — entram no rodapé assim que o cliente
+          disponibilizar.
         </p>
       </div>
     </footer>
@@ -98,7 +116,9 @@ export function LegalArticle({
       <main className="mx-auto max-w-3xl px-4 py-10 md:px-6">
         <h1 className="font-title text-2xl font-bold text-navy">{title}</h1>
         <p className="mt-1 text-sm text-black/45">Atualizado em {updated}</p>
-        <div className="ns-card mt-6 space-y-4 p-6 text-sm leading-relaxed text-ink">{children}</div>
+        <div className="ns-card mt-6 space-y-4 p-6 text-sm leading-relaxed text-ink">
+          {children}
+        </div>
       </main>
       <SiteFooter />
     </div>

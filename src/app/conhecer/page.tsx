@@ -8,11 +8,8 @@ import { SiteFooter, SiteHeader } from "@/components/site/site-chrome";
 import { StudentAppPreview } from "@/components/site/student-app-preview";
 import { api } from "@/lib/api";
 import { authClient } from "@/lib/auth-client";
-import {
-  accessRequestMessage,
-  TRAINER_NAME,
-  trainerWhatsApp,
-} from "@/lib/contact";
+import { accessRequestMessage, TRAINER_NAME, trainerWhatsApp } from "@/lib/contact";
+import { trackPreviewWhatsAppClick } from "@/lib/analytics";
 
 export default function TourPage() {
   const router = useRouter();
@@ -87,7 +84,10 @@ export default function TourPage() {
       </div>
 
       <div className="mx-auto max-w-lg overflow-hidden rounded-2xl border border-line shadow-card">
-        <StudentAppPreview greeting={firstName ? `Olá, ${firstName}` : "Olá, aluno"} />
+        <StudentAppPreview
+          greeting={firstName ? `Olá, ${firstName}` : "Olá, aluno"}
+          sourcePage="/conhecer"
+        />
       </div>
 
       <section className="border-t border-line bg-white px-4 py-10">
@@ -107,7 +107,11 @@ export default function TourPage() {
             </div>
           )}
           {wa ? (
-            <a href={wa} className="ns-btn-primary mt-5 w-full justify-center py-3 no-underline">
+            <a
+              href={wa}
+              className="ns-btn-primary mt-5 w-full justify-center py-3 no-underline"
+              onClick={() => trackPreviewWhatsAppClick()}
+            >
               Falar com o {TRAINER_NAME.split(" ")[0]} no WhatsApp
             </a>
           ) : (
