@@ -47,7 +47,7 @@ O secret do Google **não** entra na Vercel. O front só chama a API (`NEXT_PUBL
 
 Antes do primeiro login Google em produção, o domínio real deste projeto (`https://….vercel.app` ou domínio custom) precisa estar:
 
-1. em `CORS_ORIGIN` no `.env` da API na KVM1
+1. em `APP_ENV` no GitHub (Environment `production` da API) — `CORS_ORIGIN=https://nexus-science-web.vercel.app`
 2. em **Origens JavaScript autorizadas** no client OAuth do Google Cloud
 
 O redirect do Google é `https://api-abner-saas.patitow.dev/api/auth/callback/google` — detalhe no `DEPLOY.md` da API, seção 6.
