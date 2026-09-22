@@ -43,8 +43,8 @@ export function PreviewGoogleButton({ label }: { label: string }) {
       />
       {status === "ready" ? (
         <p className="mt-2 text-xs text-black/60">
-          O Google só identifica o seu e-mail. Não abre matrícula nem cobrança: o acesso ao app o{" "}
-          {TRAINER_NAME.split(" ")[0]} libera depois do combinado.
+          Entrar com o Google abre a prévia. Quem já treina com o{" "}
+          {TRAINER_NAME.split(" ")[0]} cai direto no app.
         </p>
       ) : null}
     </div>

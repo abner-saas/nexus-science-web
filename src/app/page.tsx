@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import { PreviewGoogleButton } from "@/components/site/preview-google-button";
 import { ScrollDepth } from "@/components/site/scroll-depth";
 import { SiteFooter, SiteHeader } from "@/components/site/site-chrome";
@@ -37,7 +38,6 @@ const APP_BANDS: Array<{
   {
     tab: "pagamentos",
     title: "Pagamentos",
-    notice: "Números da prévia são demonstração.",
     body: "Você paga a mensalidade por Pix, cartão ou boleto. Pago, o acesso permanece. Vencido, o treino pode ser restringido depois da tolerância que o Abner definir. Você não vê outros alunos nem o financeiro da consultoria.",
   },
 ];
@@ -80,7 +80,7 @@ export default function HomePage() {
             A prévia do hero carrega a casca inteira do app (topo + abas), então só cabe
             em duas colunas a partir de lg; em tablet retrato ela empilha.
           */}
-          <div className="mx-auto grid max-w-5xl items-start gap-10 px-4 py-10 md:px-6 md:py-16 lg:grid-cols-2 lg:gap-12">
+          <div className="mx-auto grid max-w-5xl items-start gap-10 px-4 py-10 md:px-6 md:py-16 lg:grid-cols-2 lg:items-center lg:gap-12">
             <div>
               <p className="text-sm text-black/60">Abner Lucas · Recife/PE</p>
               <h1 className="mt-2 text-balance font-title text-[30px] font-bold leading-[1.12] tracking-tight text-navy sm:text-[34px] md:text-[38px]">
@@ -89,9 +89,6 @@ export default function HomePage() {
               <p className="mt-4 max-w-md text-[15px] leading-relaxed text-black/65">
                 Consultoria de treino online, em Recife. No mesmo login, o Abner vê a sua frequência
                 e o seu bio no painel.
-              </p>
-              <p className="mt-6 inline-block rounded-lg border border-line bg-input px-3 py-1.5 text-[13px] leading-relaxed text-navy">
-                Acesso só depois do combinado. A prévia não é matrícula.
               </p>
               <div className="mt-7 max-w-sm">
                 {wa ? (
@@ -126,16 +123,17 @@ export default function HomePage() {
                   sourcePage="homepage"
                 />
               </div>
-              <p className="mt-3 text-xs leading-relaxed text-black/60">
-                Números da prévia são demonstração. Nada aqui grava treino, bio ou pagamento.
-              </p>
-              <div className="mt-5 flex max-w-sm flex-col gap-3">
+              <div className="mt-5 max-w">
+                <PreviewGoogleButton label="Abrir prévia com o Google" />
                 {wa ? (
-                  <Link href="/conhecer" className="ns-btn-secondary h-11 justify-center no-underline">
-                    Ver o app do aluno
+                  <Link
+                    href="/conhecer"
+                    className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-navy no-underline transition-all hover:gap-2.5"
+                  >
+                    Percorrer o app do aluno
+                    <ArrowRight size={16} aria-hidden />
                   </Link>
                 ) : null}
-                <PreviewGoogleButton label="Abrir prévia com o Google" />
               </div>
             </div>
           </div>
@@ -168,23 +166,23 @@ export default function HomePage() {
         </section>
 
         <section className="border-y border-line bg-surface">
-          <div className="mx-auto max-w-5xl px-4 py-12 md:px-6 md:py-16">
+          <div className="mx-auto max-w-5xl px-4 py-12 md:px-6 md:py-14">
             <h2 className="font-title text-xl font-bold text-navy md:text-2xl">
               Prescrição, sessão, bio e mensalidade
             </h2>
-            <div className="mt-6 grid divide-y divide-line md:mt-8 md:grid-cols-2 md:divide-x md:divide-y-0">
-              <div className="py-6 md:py-0 md:pr-12">
+            <div className="ns-card mt-6 grid divide-y divide-line overflow-hidden md:mt-8 md:grid-cols-2 md:divide-x md:divide-y-0">
+              <div className="p-6 md:p-8">
                 <h3 className="font-title text-base font-bold text-ink">
                   Conversas, planilha e app do banco
                 </h3>
-                <p className="mt-3 max-w-prose text-sm leading-relaxed text-black/65">
+                <p className="mt-3 text-sm leading-relaxed text-black/65">
                   A prescrição vai na conversa. A sessão fica na planilha. A mensalidade vai no app
                   do banco.
                 </p>
               </div>
-              <div className="py-6 md:py-0 md:pl-12">
-                <h3 className="font-title text-base font-bold text-ink">O mesmo login</h3>
-                <p className="mt-3 max-w-prose text-sm leading-relaxed text-black/65">
+              <div className="bg-input p-6 md:p-8">
+                <h3 className="font-title text-base font-bold text-navy">O mesmo login</h3>
+                <p className="mt-3 text-sm leading-relaxed text-black/65">
                   Você marca a sessão. O bio entra no painel. A cobrança fica ao lado da frequência.
                 </p>
               </div>
@@ -193,41 +191,49 @@ export default function HomePage() {
         </section>
 
         <section className="bg-white">
-          <div className="mx-auto max-w-5xl px-4 py-12 md:px-6 md:py-16">
-            <h2 className="font-title text-xl font-bold text-navy md:text-2xl">Como o acesso abre</h2>
-            <p className="mt-2 text-sm leading-relaxed text-black/60">
-              A plataforma é da consultoria do Abner.
-            </p>
-            <ol className="mt-8 divide-y divide-line border-y border-line">
+          {/*
+            A ordem no DOM é título, passos e depois a chamada. No desktop a grade
+            recoloca a chamada embaixo do título, sem mexer na leitura no mobile.
+          */}
+          <div className="mx-auto max-w-5xl px-4 py-12 md:px-6 md:py-16 lg:grid lg:grid-cols-[minmax(0,19rem)_1fr] lg:gap-16">
+            <div className="lg:col-start-1 lg:row-start-1">
+              <h2 className="font-title text-xl font-bold text-navy md:text-2xl">
+                Como o acesso abre
+              </h2>
+              <p className="mt-3 text-sm leading-relaxed text-black/60">
+                A plataforma é da consultoria do Abner.
+              </p>
+            </div>
+
+            <ol className="mt-8 divide-y divide-line border-y border-line lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:mt-0 lg:border-t-0 lg:pt-0">
               {ACCESS_STEPS.map((step) => (
-                <li key={step.n} className="grid gap-1 py-5 sm:grid-cols-[2.5rem_1fr] sm:gap-4">
-                  <p className="font-brand text-[28px] leading-none text-navy sm:pt-0.5">
+                <li key={step.n} className="flex items-start gap-4 py-5 lg:py-6">
+                  <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-navy font-title text-[13px] font-bold text-white">
                     {step.n}
-                  </p>
-                  <div>
+                  </span>
+                  <div className="min-w-0">
                     <h3 className="font-title text-base font-bold text-ink">{step.title}</h3>
-                    <p className="mt-1 max-w-prose text-sm leading-relaxed text-black/60">
-                      {step.body}
-                    </p>
+                    <p className="mt-1 text-sm leading-relaxed text-black/60">{step.body}</p>
                   </div>
                 </li>
               ))}
             </ol>
-            {wa ? (
-              <div className="mt-8 max-w-sm">
+
+            <div className="mt-8 lg:col-start-1 lg:row-start-2 lg:mt-8 lg:self-start">
+              {wa ? (
                 <TrackedLink
                   href={wa}
                   kind="whatsapp"
                   location="acesso_steps"
-                  className="ns-btn-primary h-11 w-full justify-center no-underline"
+                  className="ns-btn-primary h-11 w-full justify-center no-underline sm:w-auto sm:px-8"
                 >
                   Falar com o Abner
                 </TrackedLink>
-              </div>
-            ) : null}
-            <p className={`text-sm text-black/60 ${wa ? "mt-3" : "mt-8"}`}>
-              Plano e valor saem da conversa, não desta página.
-            </p>
+              ) : null}
+              <p className={`text-sm leading-relaxed text-black/60 ${wa ? "mt-3" : ""}`}>
+                Plano e valor saem da conversa, não desta página.
+              </p>
+            </div>
           </div>
         </section>
 

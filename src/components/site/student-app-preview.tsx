@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { Dumbbell, HeartPulse, Ruler, Wallet } from "lucide-react";
 import { trackEvent, type PreviewSourcePage, type PreviewTabName } from "@/lib/analytics";
 
@@ -23,7 +23,7 @@ const ROTATION_MS = 4500;
  * A tela tem altura fixa para a casca não pular de tamanho entre abas. O valor
  * cobre a aba mais alta (bio) em cada faixa de largura, então nada corta.
  */
-const SCREEN_HEIGHT = "h-[436px] min-[375px]:h-[372px]";
+const SCREEN_HEIGHT = "h-[364px] min-[375px]:h-[316px]";
 
 const DEMO_TRAINING = {
   routine: "Rotina intermediária · hipertrofia",
@@ -49,19 +49,20 @@ const DEMO_BIO = [
 ] as const;
 
 const DEMO_PAYMENTS = [
-  { due: "05/09/2026", amount: "R$ 297,00", status: "Pago" },
   { due: "05/10/2026", amount: "R$ 297,00", status: "Pendente" },
+  { due: "05/09/2026", amount: "R$ 297,00", status: "Pago" },
+  { due: "05/08/2026", amount: "R$ 297,00", status: "Pago" },
+  { due: "05/07/2026", amount: "R$ 297,00", status: "Pago" },
+  { due: "05/06/2026", amount: "R$ 297,00", status: "Pago" },
 ];
 
 const DEMO_ASSESSMENTS = [
+  { date: "01/08/2026", weight: "66,4 kg", bmi: "24,4", fat: "21,6%" },
+  { date: "01/07/2026", weight: "67,1 kg", bmi: "24,7", fat: "22,4%" },
+  { date: "01/06/2026", weight: "67,8 kg", bmi: "24,9", fat: "23,2%" },
   { date: "01/05/2026", weight: "68,5 kg", bmi: "25,2", fat: "24,1%" },
   { date: "01/04/2026", weight: "70,2 kg", bmi: "25,8", fat: "25,8%" },
 ];
-
-/** mt-auto encosta o aviso na base quando o card está com altura fixa. */
-function DemoHint({ children }: { children: string }) {
-  return <p className="mt-auto pt-3 text-xs leading-relaxed text-maroon">{children}</p>;
-}
 
 /**
  * A prévia é uma maquete de tela, não estrutura do documento: os títulos internos
@@ -100,9 +101,6 @@ function TreinoPane() {
           ))}
         </ul>
       </div>
-      <DemoHint>
-        Prévia: o botão não confirma sessão. No app real, isso conta frequência no painel.
-      </DemoHint>
     </section>
   );
 }
@@ -124,13 +122,9 @@ function BioPane() {
           </label>
         ))}
       </div>
-      <button type="button" className="ns-btn-primary mt-3 w-full justify-center" disabled>
+      <button type="button" className="ns-btn-primary mt-4 w-full justify-center" disabled>
         Registrar
       </button>
-      <DemoHint>
-        Prévia: valores de exemplo. No app, energia, sono e dor alimentam o alerta de 7 dias sem
-        registro.
-      </DemoHint>
     </section>
   );
 }
@@ -159,10 +153,6 @@ function PagamentosPane() {
           ))}
         </tbody>
       </table>
-      <p className="mt-auto border-t border-line px-4 py-3 text-xs leading-relaxed text-maroon">
-        Valores de demonstração. A cobrança real usa Pix, cartão ou boleto pelo Asaas, depois que o
-        plano é combinado com o Abner.
-      </p>
     </section>
   );
 }
@@ -191,9 +181,6 @@ function AvaliacaoPane() {
           ))}
         </tbody>
       </table>
-      <DemoHint>
-        Prévia: série fictícia. No app entram as medições e fotos de progresso da consultoria.
-      </DemoHint>
     </section>
   );
 }
@@ -205,37 +192,44 @@ function PreviewScreen({ tab }: { tab: PreviewTab }) {
   return <PagamentosPane />;
 }
 
+const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
+
+function subscribeToMotionPreference(onChange: () => void) {
+  const query = window.matchMedia(REDUCED_MOTION_QUERY);
+  query.addEventListener("change", onChange);
+  return () => query.removeEventListener("change", onChange);
+}
+
+function usePrefersReducedMotion() {
+  return useSyncExternalStore(
+    subscribeToMotionPreference,
+    () => window.matchMedia(REDUCED_MOTION_QUERY).matches,
+    () => false,
+  );
+}
+
 /**
- * Rotação automática das abas. Ela só roda quando a prévia está visível na tela
- * e para de vez no primeiro toque do visitante numa aba, que a partir daí manda
- * na navegação. Também não roda para quem pediu menos movimento no sistema.
+ * Rotação automática das abas. Ela só roda enquanto a prévia está visível, pausa
+ * com o cursor ou o foco dentro dela e não roda para quem pediu menos movimento
+ * no sistema. O primeiro toque numa aba encerra a rotação de vez.
  */
 function useTabRotation(enabled: boolean, onTick: () => void) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [onScreen, setOnScreen] = useState(false);
-  const [hovered, setHovered] = useState(false);
-  const [reducedMotion, setReducedMotion] = useState(false);
-
-  useEffect(() => {
-    const query = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setReducedMotion(query.matches);
-    const onChange = (e: MediaQueryListEvent) => setReducedMotion(e.matches);
-    query.addEventListener("change", onChange);
-    return () => query.removeEventListener("change", onChange);
-  }, []);
+  const [paused, setPaused] = useState(false);
+  const reducedMotion = usePrefersReducedMotion();
 
   useEffect(() => {
     const node = containerRef.current;
     if (!node) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => setOnScreen(entry.isIntersecting),
-      { threshold: 0.4 },
-    );
+    const observer = new IntersectionObserver(([entry]) => setOnScreen(entry.isIntersecting), {
+      threshold: 0.4,
+    });
     observer.observe(node);
     return () => observer.disconnect();
   }, []);
 
-  const running = enabled && onScreen && !hovered && !reducedMotion;
+  const running = enabled && onScreen && !paused && !reducedMotion;
 
   useEffect(() => {
     if (!running) return;
@@ -243,12 +237,10 @@ function useTabRotation(enabled: boolean, onTick: () => void) {
     return () => window.clearInterval(timer);
   }, [running, onTick]);
 
-  return {
-    containerRef,
-    running,
-    pause: () => setHovered(true),
-    resume: () => setHovered(false),
-  };
+  const pause = useCallback(() => setPaused(true), []);
+  const resume = useCallback(() => setPaused(false), []);
+
+  return [containerRef, running, pause, resume] as const;
 }
 
 export function StudentAppPreview({
@@ -272,7 +264,10 @@ export function StudentAppPreview({
     });
   }, []);
 
-  const rotation = useTabRotation(mode === "full" && !takenOver, advance);
+  const [containerRef, rotating, pauseRotation, resumeRotation] = useTabRotation(
+    mode === "full" && !takenOver,
+    advance,
+  );
 
   function onSelect(next: PreviewTab) {
     setTakenOver(true);
@@ -287,11 +282,11 @@ export function StudentAppPreview({
 
   return (
     <div
-      ref={rotation.containerRef}
+      ref={containerRef}
       className="bg-input"
-      onMouseEnter={rotation.pause}
-      onMouseLeave={rotation.resume}
-      onFocusCapture={rotation.pause}
+      onMouseEnter={pauseRotation}
+      onMouseLeave={resumeRotation}
+      onFocusCapture={pauseRotation}
     >
       <header className="border-b border-line bg-white px-4 py-4">
         <div className="mx-auto flex max-w-lg items-center justify-between gap-3">
@@ -331,7 +326,7 @@ export function StudentAppPreview({
                   <span
                     aria-hidden
                     className={`absolute inset-x-0 -top-0.5 h-0.5 origin-left animate-[preview-tab_4500ms_linear] bg-maroon ${
-                      rotation.running ? "" : "[animation-play-state:paused]"
+                      rotating ? "" : "[animation-play-state:paused]"
                     }`}
                   />
                 ) : null}

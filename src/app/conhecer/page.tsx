@@ -68,14 +68,11 @@ export default function TourPage() {
   return (
     <div className="min-h-screen bg-surface">
       <SiteHeader />
-      <div className="border-b border-line bg-white px-4 py-2 text-center text-[12px] text-maroon">
-        Dados de demonstração. Nada aqui grava treino, bio ou pagamento.
-      </div>
 
-      <div className="mx-auto max-w-lg px-4 py-4">
+      <div className="mx-auto max-w-lg px-4 py-5">
         <div className="flex items-center justify-between gap-3">
-          <p className="text-sm text-black/55">
-            {firstName ? `Oi, ${firstName}. Esta é a cara do app.` : "App do aluno — prévia."}
+          <p className="text-sm text-black/60">
+            {firstName ? `Oi, ${firstName}. Esta é a cara do app.` : "Prévia do app do aluno."}
           </p>
           <button type="button" onClick={leavePreview} className="ns-btn-ghost text-xs">
             Encerrar prévia
