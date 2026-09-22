@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { CookiePreferences } from "@/components/site/site-telemetry";
+import { CookiePreferences } from "@/components/site/cookie-consent";
 import { LegalArticle, LegalSection } from "@/components/site/site-chrome";
 import { BRAND_NAME } from "@/lib/site";
 
@@ -38,8 +38,8 @@ export default function CookiesPage() {
 
       <LegalSection index={3} title="Medição de audiência, só com a sua autorização">
         <p>
-          O Google Analytics só é carregado depois que você aceita no aviso exibido na primeira
-          visita. Se você recusar, o script não entra na página.
+          O Google Analytics só é carregado depois que você aceita no aviso da primeira visita.
+          Se você recusar, o script não entra na página.
         </p>
         <p>Autorizada a medição, o Google recebe:</p>
         <ul>
