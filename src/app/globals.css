@@ -184,3 +184,13 @@
 .section-enter {
   animation: fadeIn 0.35s ease both;
 }
+
+/* Barra de tempo da aba ativa na prévia do app do aluno. */
+@keyframes preview-tab {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}

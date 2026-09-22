@@ -1,38 +1,71 @@
-import { CookiePreferences } from "@/components/site/site-telemetry";
-import { LegalArticle } from "@/components/site/site-chrome";
-import { BRAND_NAME } from "@/lib/site";
 import type { Metadata } from "next";
+import { CookiePreferences } from "@/components/site/site-telemetry";
+import { LegalArticle, LegalSection } from "@/components/site/site-chrome";
+import { BRAND_NAME } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Política de cookies",
-  description: `Cookies de sessão e medição opcional do Google Analytics no ${BRAND_NAME}.`,
+  description: `Quais cookies o ${BRAND_NAME} usa, o que cada um faz e como mudar a sua escolha sobre a medição de audiência.`,
 };
 
 export default function CookiesPage() {
   return (
-    <LegalArticle title="Política de cookies" updated="22/09/2026">
-      <p>
-        O {BRAND_NAME} usa cookies e armazenamento equivalentes só para sessão de login (JWT da API
-        e sessão do Google via Better Auth). São cookies necessários ao funcionamento: entrar,
-        permanecer autenticado e abrir a prévia.
-      </p>
-      <h2 className="font-title text-base font-bold text-navy">Medição sem cookie</h2>
-      <p>
-        O site envia Core Web Vitals (LCP, INP, CLS) e a página visitada para a Vercel, que hospeda
-        o {BRAND_NAME}. Essa medição não grava cookie e não recebe nome, e-mail, telefone nem o
-        texto da mensagem de WhatsApp.
-      </p>
-      <h2 className="font-title text-base font-bold text-navy">Google Analytics, só com aceite</h2>
-      <p>
-        O script do Google Analytics 4 não é carregado até você aceitar no aviso do site. Recusar
-        deixa o script de fora. O Google recebe o caminho da página e eventos de interesse (clique
-        no WhatsApp, abas da prévia, login e profundidade de rolagem) — sem dados de cadastro, com
-        anonimização de IP. Publicidade e sinais do Google ficam desligados. Não há pixel de
-        anúncio.
-      </p>
-      <p>A escolha fica neste navegador. Você pode mudá-la aqui:</p>
-      <CookiePreferences />
-      <p>Apagar os dados do site no navegador encerra o login e também esquece essa escolha.</p>
+    <LegalArticle
+      title="Política de cookies"
+      intro={`O ${BRAND_NAME} usa o mínimo de cookies necessário para manter o seu login e, se você autorizar, para medir o uso do site público. Esta página lista o que é usado em cada caso e onde trocar a sua escolha.`}
+      updated="22 de setembro de 2026"
+    >
+      <LegalSection index={1} title="Cookies necessários">
+        <p>
+          São os cookies que mantêm a sessão de quem entra na plataforma: um guarda o token de
+          autenticação da nossa API e outro guarda a sessão criada quando o login é feito com o
+          Google. Sem eles não é possível entrar nem permanecer autenticado, então não dependem de
+          autorização.
+        </p>
+        <p>
+          Eles expiram ao fim da sessão ou no prazo definido no login, e são apagados quando você
+          sai da conta.
+        </p>
+      </LegalSection>
+
+      <LegalSection index={2} title="Medição de desempenho, sem cookie">
+        <p>
+          O site envia à Vercel, que o hospeda, a página visitada e as métricas de carregamento
+          conhecidas como Core Web Vitals. Essa medição não grava cookie no seu navegador e não
+          recebe nome, e-mail, telefone ou o texto de mensagens.
+        </p>
+      </LegalSection>
+
+      <LegalSection index={3} title="Medição de audiência, só com a sua autorização">
+        <p>
+          O Google Analytics só é carregado depois que você aceita no aviso exibido na primeira
+          visita. Se você recusar, o script não entra na página.
+        </p>
+        <p>Autorizada a medição, o Google recebe:</p>
+        <ul>
+          <li>o caminho da página visitada;</li>
+          <li>cliques nos botões de contato e de login;</li>
+          <li>a troca de abas na prévia do app;</li>
+          <li>a profundidade da rolagem na página inicial.</li>
+        </ul>
+        <p>
+          O endereço de IP é anonimizado, os recursos de publicidade ficam desligados e nenhum dado
+          de cadastro é enviado. A medição cobre apenas as páginas públicas: o painel da equipe e as
+          telas do aluno ficam de fora.
+        </p>
+      </LegalSection>
+
+      <LegalSection index={4} title="Sua escolha">
+        <p>
+          A preferência é guardada neste navegador e vale para as próximas visitas. Você pode
+          mudá-la quando quiser:
+        </p>
+        <CookiePreferences />
+        <p>
+          Apagar os dados do site no navegador encerra a sessão de login e também esquece essa
+          escolha, que volta a ser perguntada na visita seguinte.
+        </p>
+      </LegalSection>
     </LegalArticle>
   );
 }

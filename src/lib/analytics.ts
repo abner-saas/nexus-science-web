@@ -11,6 +11,7 @@ const WHATSAPP_LOCATIONS = [
   "floating_cta",
   "footer",
   "conhecer",
+  "legal",
 ] as const;
 
 const PREVIEW_TABS = ["treino", "bio", "avaliacao", "pagamentos"] as const;

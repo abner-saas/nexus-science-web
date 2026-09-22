@@ -85,6 +85,8 @@ export default function TourPage() {
 
       <div className="mx-auto max-w-lg overflow-hidden rounded-2xl border border-line shadow-card">
         <StudentAppPreview
+          tab="treino"
+          mode="full"
           greeting={firstName ? `Olá, ${firstName}` : "Olá, aluno"}
           sourcePage="/conhecer"
         />

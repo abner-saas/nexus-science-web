@@ -72,7 +72,7 @@ export function CookiePreferences() {
           Recusar medição
         </button>
       </div>
-      <p className="text-xs text-black/45">{preferenceLabel(choice, Boolean(measurementId))}</p>
+      <p className="text-xs text-black/60">{preferenceLabel(choice, Boolean(measurementId))}</p>
     </div>
   );
 }
@@ -104,7 +104,7 @@ function ConsentBanner() {
       aria-label="Medição de visitas"
     >
       <p className="text-sm leading-relaxed text-black/70">
-        O Google Analytics mede visitas e cliques neste site — sem nome, e-mail ou telefone. O
+        O Google Analytics mede visitas e cliques neste site, sem nome, e-mail ou telefone. O
         script só carrega se você aceitar. A Vercel já recebe desempenho anônimo, sem cookie.
       </p>
       <div className="mt-3 flex flex-wrap items-center gap-2">
