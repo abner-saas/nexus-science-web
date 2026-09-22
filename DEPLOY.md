@@ -41,6 +41,17 @@ COOKIE_DOMAIN=.seudominio.com
 
 Recomendação: `app.seudominio.com` (Vercel) + `api.seudominio.com` (KVM1) com `COOKIE_DOMAIN=.seudominio.com`.
 
-## 4. Preview deployments
+## 4. Google OAuth
 
-PRs abertos no GitHub geram URLs de preview na Vercel automaticamente — use staging da API se for testar login com cookies.
+O secret do Google **não** entra na Vercel. O front só chama a API (`NEXT_PUBLIC_API_URL`); o OAuth vive no Fastify.
+
+Antes do primeiro login Google em produção, o domínio real deste projeto (`https://….vercel.app` ou domínio custom) precisa estar:
+
+1. em `CORS_ORIGIN` no `.env` da API na KVM1
+2. em **Origens JavaScript autorizadas** no client OAuth do Google Cloud
+
+O redirect do Google é `https://api-abner-saas.patitow.dev/api/auth/callback/google` — detalhe no `DEPLOY.md` da API, seção 6.
+
+## 5. Preview deployments
+
+PRs abertos no GitHub geram URLs de preview na Vercel automaticamente — use staging da API se for testar login com cookies. Login Google **não** funciona em preview: o Console do Google não aceita `*.vercel.app` como origem.
