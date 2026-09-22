@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { api } from "@/lib/api";
+import { ApiError, api } from "@/lib/api";
 import { canAccess } from "@/lib/roles";
 import { useAuthStore } from "@/store/auth";
 import { Sidebar } from "./sidebar";
@@ -48,10 +48,10 @@ export function AppShell({
         if (!cancelled) setUser(res.user);
         if (!res.user) router.replace("/login");
         else if (res.user.role === "STUDENT") router.replace("/aluno");
-      } catch {
+      } catch (err) {
         if (!cancelled) {
           setUser(null);
-          router.replace("/login");
+          router.replace(err instanceof ApiError && err.code === "LEAD" ? "/conhecer" : "/login");
         }
       } finally {
         if (!cancelled) setHydrated(true);

@@ -31,14 +31,19 @@ function OAuthCallbackInner() {
     let cancelled = false;
     (async () => {
       try {
-        const res = await api.me();
+        const { data } = await api.whoami();
         if (cancelled) return;
-        if (!res.user) {
-          router.replace("/login?error=google");
+        if (data.kind === "member") {
+          setUser(data.user);
+          router.replace(data.user.role === "STUDENT" ? "/aluno" : "/dashboard");
           return;
         }
-        setUser(res.user);
-        router.replace(res.user.role === "STUDENT" ? "/aluno" : "/dashboard");
+        if (data.kind === "lead") {
+          setUser(null);
+          router.replace("/conhecer");
+          return;
+        }
+        router.replace("/login?error=google");
       } catch {
         router.replace("/login?error=google");
       }

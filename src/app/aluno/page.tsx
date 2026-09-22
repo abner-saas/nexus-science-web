@@ -3,7 +3,7 @@
 import { FormEvent, useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Dumbbell, HeartPulse, LogOut, Ruler, Wallet } from "lucide-react";
-import { api } from "@/lib/api";
+import { ApiError, api } from "@/lib/api";
 import { formatCurrency } from "@/lib/utils";
 import { useAuthStore } from "@/store/auth";
 import { useRouter } from "next/navigation";
@@ -33,8 +33,14 @@ export default function AlunoAppPage() {
       try {
         const res = await api.me();
         if (!cancelled) setUser(res.user);
-      } catch {
-        if (!cancelled) setUser(null);
+      } catch (err) {
+        if (!cancelled) {
+          setUser(null);
+          if (err instanceof ApiError && err.code === "LEAD") {
+            router.replace("/conhecer");
+            return;
+          }
+        }
       } finally {
         if (!cancelled) setHydrated(true);
       }
@@ -42,7 +48,7 @@ export default function AlunoAppPage() {
     return () => {
       cancelled = true;
     };
-  }, [setUser]);
+  }, [router, setUser]);
 
   const routines = useQuery({
     queryKey: ["aluno-routines", studentId],

@@ -4,7 +4,7 @@ import { FormEvent, Suspense, useEffect, useState, type ReactNode } from "react"
 import { useRouter, useSearchParams } from "next/navigation";
 import { GoogleSignInButton } from "@/components/ui/google-sign-in-button";
 import { api } from "@/lib/api";
-import { authClient } from "@/lib/auth-client";
+import { startGoogleSignIn } from "@/lib/auth-client";
 import { useAuthStore } from "@/store/auth";
 
 function LoginCardChrome({ children }: { children: ReactNode }) {
@@ -97,10 +97,7 @@ function LoginForm() {
     setError(null);
     setGoogleBusy(true);
     try {
-      await authClient.signIn.social({
-        provider: "google",
-        callbackURL: `${window.location.origin}/login/oauth`,
-      });
+      await startGoogleSignIn();
     } catch {
       setGoogleBusy(false);
       setError("Não foi possível iniciar o login com o Google.");
@@ -134,11 +131,16 @@ function LoginForm() {
         ))}
       </div>
 
-      <p className="mt-4 text-sm text-black/55">
-        {mode === "aluno"
-          ? "Acesse seu treino, biofeedback e pagamentos"
-          : "Acesse o painel da consultoria"}
-      </p>
+        <p className="mt-4 text-sm text-black/55">
+          {mode === "aluno"
+            ? "Acesse seu treino, biofeedback e pagamentos"
+            : "Acesse o painel da consultoria"}
+        </p>
+        <p className="mt-2 text-xs">
+          <a href="/" className="text-navy/70 no-underline hover:text-navy">
+            ← Página inicial
+          </a>
+        </p>
 
       <GoogleSignInButton status={googleStatus} busy={googleBusy} onClick={onGoogle} />
 

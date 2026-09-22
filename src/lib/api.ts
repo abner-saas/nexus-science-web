@@ -2,9 +2,11 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3333";
 
 export class ApiError extends Error {
   status: number;
-  constructor(status: number, message: string) {
+  code?: string;
+  constructor(status: number, message: string, code?: string) {
     super(message);
     this.status = status;
+    this.code = code;
   }
 }
 
@@ -27,7 +29,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 
   const data = await res.json().catch(() => ({}));
   if (!res.ok) {
-    throw new ApiError(res.status, data.message || data.error || "Erro na requisição");
+    throw new ApiError(res.status, data.message || data.error || "Erro na requisição", data.code);
   }
   return data as T;
 }
@@ -145,6 +147,13 @@ export const api = {
     }),
   logout: () => request<{ ok: boolean }>("/auth/logout", { method: "POST" }),
   me: () => request<{ user: AuthUser | null }>("/auth/me"),
+  whoami: () =>
+    request<{
+      data:
+        | { kind: "guest" }
+        | { kind: "member"; user: AuthUser }
+        | { kind: "lead"; name: string; email: string };
+    }>("/auth/whoami"),
 
   students: {
     list: (params?: { q?: string; status?: string }) => {

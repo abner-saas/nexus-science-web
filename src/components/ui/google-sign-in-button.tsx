@@ -33,16 +33,24 @@ function Spinner() {
 type GoogleSignInButtonProps = {
   status: "loading" | "ready" | "off";
   busy?: boolean;
+  label?: string;
+  className?: string;
   onClick: () => void;
 };
 
-export function GoogleSignInButton({ status, busy, onClick }: GoogleSignInButtonProps) {
+export function GoogleSignInButton({
+  status,
+  busy,
+  onClick,
+  label = "Entrar com o Google",
+  className,
+}: GoogleSignInButtonProps) {
   if (status === "off") return null;
 
   if (status === "loading") {
     return (
       <div
-        className="mt-5 h-11 w-full animate-pulse rounded-lg bg-[#f1f3f4]"
+        className={`h-11 w-full animate-pulse rounded-lg bg-[#f1f3f4] ${className ?? "mt-5"}`}
         aria-hidden
       />
     );
@@ -54,10 +62,10 @@ export function GoogleSignInButton({ status, busy, onClick }: GoogleSignInButton
       onClick={onClick}
       disabled={busy}
       aria-busy={busy}
-      className="mt-5 inline-flex h-11 w-full items-center justify-center gap-3 rounded-lg border border-[#747775] bg-white px-4 text-[14px] font-medium tracking-[0.15px] text-[#1f1f1f] transition hover:bg-[#f8f9fa] hover:shadow-[0_1px_2px_rgba(60,64,67,0.3),0_1px_3px_1px_rgba(60,64,67,0.15)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1a73e8] disabled:cursor-wait disabled:opacity-80"
+      className={`inline-flex h-11 w-full items-center justify-center gap-3 rounded-lg border border-[#747775] bg-white px-4 text-[14px] font-medium tracking-[0.15px] text-[#1f1f1f] transition hover:bg-[#f8f9fa] hover:shadow-[0_1px_2px_rgba(60,64,67,0.3),0_1px_3px_1px_rgba(60,64,67,0.15)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1a73e8] disabled:cursor-wait disabled:opacity-80 ${className ?? "mt-5"}`}
     >
       {busy ? <Spinner /> : <GoogleMark />}
-      {busy ? "Redirecionando…" : "Entrar com o Google"}
+      {busy ? "Redirecionando…" : label}
     </button>
   );
 }

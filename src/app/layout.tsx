@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Syne, DM_Sans, Bebas_Neue, Montserrat } from "next/font/google";
 import { Providers } from "@/components/providers";
+import { SITE_URL } from "@/lib/site";
 import "./globals.css";
 
 const syne = Syne({
@@ -28,8 +29,26 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
-  title: "Nexus Science",
-  description: "Plataforma de gestão para consultoria fitness",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "Consultoria Abner Lucas — treino no app",
+    template: "%s · Nexus Science",
+  },
+  description:
+    "Consultoria fitness online em Recife. Treino prescrito, biofeedback, avaliação e mensalidade no app do aluno.",
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/nexus-mark.png",
+  },
+  openGraph: {
+    type: "website",
+    locale: "pt_BR",
+    siteName: "Nexus Science",
+    title: "Consultoria Abner Lucas — treino no app",
+    description:
+      "Consultoria fitness online em Recife. Treino, biofeedback, avaliação e mensalidade no app do aluno.",
+    images: [{ url: "/nexus-mark.png", alt: "Marca Nexus Science" }],
+  },
 };
 
 export default function RootLayout({

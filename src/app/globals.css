@@ -138,6 +138,17 @@
     box-sizing: border-box;
   }
 
+  :focus-visible {
+    outline: 2px solid var(--navy);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .section-enter {
+      animation: none;
+    }
+  }
+
   ::selection {
     background: rgba(0, 32, 96, 0.33);
     color: #000;
