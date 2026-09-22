@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, Suspense, useEffect, useState, type ReactNode } from "react";
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { GoogleSignInButton } from "@/components/ui/google-sign-in-button";
 import { api } from "@/lib/api";
@@ -137,9 +138,9 @@ function LoginForm() {
             : "Acesse o painel da consultoria"}
         </p>
         <p className="mt-2 text-xs">
-          <a href="/" className="text-navy/70 no-underline hover:text-navy">
+          <Link href="/" className="text-navy/70 no-underline hover:text-navy">
             ← Página inicial
-          </a>
+          </Link>
         </p>
 
       <GoogleSignInButton status={googleStatus} busy={googleBusy} onClick={onGoogle} />

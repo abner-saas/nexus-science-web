@@ -56,7 +56,7 @@ const ACCESS_STEPS = [
   {
     n: "3",
     title: "Login no e-mail cadastrado",
-    body: "Você entra com esse e-mail ou com o Google dele; sem cadastro, o Google só abre a prévia e não cria matrícula.",
+    body: "Você entra com esse e-mail ou com a conta Google dele, e o app abre na sua rotina.",
   },
 ];
 
@@ -195,7 +195,7 @@ export default function HomePage() {
             A ordem no DOM é título, passos e depois a chamada. No desktop a grade
             recoloca a chamada embaixo do título, sem mexer na leitura no mobile.
           */}
-          <div className="mx-auto max-w-5xl px-4 py-12 md:px-6 md:py-16 lg:grid lg:grid-cols-[minmax(0,19rem)_1fr] lg:gap-16">
+          <div className="mx-auto max-w-5xl px-4 py-12 md:px-6 md:py-16 lg:grid lg:grid-cols-[minmax(0,19rem)_1fr] lg:grid-rows-[auto_1fr] lg:gap-x-16">
             <div className="lg:col-start-1 lg:row-start-1">
               <h2 className="font-title text-xl font-bold text-navy md:text-2xl">
                 Como o acesso abre
@@ -219,7 +219,7 @@ export default function HomePage() {
               ))}
             </ol>
 
-            <div className="mt-8 lg:col-start-1 lg:row-start-2 lg:mt-8 lg:self-start">
+            <div className="mt-8 lg:col-start-1 lg:row-start-2 lg:mt-6 lg:self-start">
               {wa ? (
                 <TrackedLink
                   href={wa}
