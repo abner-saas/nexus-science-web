@@ -289,7 +289,7 @@ export function StudentAppPreview({
       onFocusCapture={pauseRotation}
     >
       <header className="border-b border-line bg-white px-4 py-4">
-        <div className="mx-auto flex max-w-lg items-center justify-between gap-3">
+        <div className="flex items-center justify-between gap-3">
           <div className="min-w-0">
             <p className="font-brand text-xl leading-none tracking-wide text-navy">Nexus Science</p>
             <p className="mt-1 truncate text-sm text-black/60">{greeting}</p>
@@ -300,14 +300,14 @@ export function StudentAppPreview({
         </div>
       </header>
 
-      <div className="mx-auto max-w-lg px-4 py-5">
+      <div className="px-4 py-5">
         <div className={SCREEN_HEIGHT}>
           <PreviewScreen tab={tab} />
         </div>
       </div>
 
       <nav className="border-t border-line bg-white" aria-label="Seções do app do aluno">
-        <div className="mx-auto grid max-w-lg grid-cols-4">
+        <div className="grid grid-cols-4">
           {TABS.map(([id, label, Icon]) => {
             const active = tab === id;
             return (

@@ -86,11 +86,11 @@ export default function HomePage() {
               <h1 className="mt-2 text-balance font-title text-[30px] font-bold leading-[1.12] tracking-tight text-navy sm:text-[34px] md:text-[38px]">
                 Você vê a rotina prescrita, marca o dia e registra como chegou.
               </h1>
-              <p className="mt-4 max-w-md text-[15px] leading-relaxed text-black/65">
+              <p className="mt-4 text-[15px] leading-relaxed text-black/65">
                 Consultoria de treino online, em Recife. No mesmo login, o Abner vê a sua frequência
                 e o seu bio no painel.
               </p>
-              <div className="mt-7 max-w-sm">
+              <div className="mt-7">
                 {wa ? (
                   <TrackedLink
                     href={wa}
@@ -114,8 +114,7 @@ export default function HomePage() {
             </div>
 
             <div>
-              {/* max-w-lg casa com a largura interna da casca: empilhada, o card não estica. */}
-              <div className="max-w-lg overflow-hidden rounded-2xl border border-line shadow-card lg:max-w-none">
+              <div className="overflow-hidden rounded-2xl border border-line shadow-card">
                 <StudentAppPreview
                   tab="treino"
                   mode="full"
@@ -123,7 +122,7 @@ export default function HomePage() {
                   sourcePage="homepage"
                 />
               </div>
-              <div className="mt-5 max-w">
+              <div className="mt-5">
                 <PreviewGoogleButton label="Abrir prévia com o Google" />
                 {wa ? (
                   <Link
