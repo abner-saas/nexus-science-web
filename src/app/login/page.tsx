@@ -52,6 +52,16 @@ function BrandMark() {
   );
 }
 
+const GOOGLE_ERROR_MESSAGES: Record<string, string> = {
+  state_mismatch:
+    "O navegador bloqueou o cookie de login do Google. Libere cookies para este site ou tente em outro navegador.",
+};
+
+function googleErrorMessage(code: string | null) {
+  if (!code) return null;
+  return GOOGLE_ERROR_MESSAGES[code] ?? "Não foi possível entrar com o Google. Tente de novo.";
+}
+
 function LoginForm() {
   const router = useRouter();
   const params = useSearchParams();
@@ -60,9 +70,7 @@ function LoginForm() {
   const [mode, setMode] = useState<"equipe" | "aluno">(asAluno ? "aluno" : "equipe");
   const [email, setEmail] = useState(asAluno ? "" : "admin@nexusscience.local");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(
-    params.get("error") ? "Não foi possível entrar com o Google. Tente de novo." : null,
-  );
+  const [error, setError] = useState<string | null>(googleErrorMessage(params.get("error")));
   const [loading, setLoading] = useState(false);
   const [googleStatus, setGoogleStatus] = useState<"loading" | "ready" | "off">("loading");
   const [googleBusy, setGoogleBusy] = useState(false);
@@ -85,6 +93,16 @@ function LoginForm() {
     setError(null);
     try {
       const res = await api.login(email, password);
+      const isSessionCookieStored = await api
+        .me()
+        .then(() => true)
+        .catch(() => false);
+      if (!isSessionCookieStored) {
+        setError(
+          "Senha aceita, mas o navegador bloqueou o cookie de sessão. Libere cookies para este site ou tente em outro navegador.",
+        );
+        return;
+      }
       setUser(res.user);
       router.replace(res.user.role === "STUDENT" ? "/aluno" : "/dashboard");
     } catch (err) {

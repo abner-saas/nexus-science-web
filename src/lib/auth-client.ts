@@ -10,5 +10,6 @@ export function startGoogleSignIn() {
   return authClient.signIn.social({
     provider: "google",
     callbackURL: `${window.location.origin}/login/oauth`,
+    errorCallbackURL: `${window.location.origin}/login`,
   });
 }
