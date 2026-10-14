@@ -29,6 +29,7 @@ export default function CrmPage() {
     city: "",
     state: "",
     goal: "",
+    planId: "",
     value: "",
     status: "Ativo",
     entryDate: new Date().toISOString().slice(0, 10),
@@ -39,6 +40,11 @@ export default function CrmPage() {
   const { data, isLoading } = useQuery({
     queryKey: ["students", q, status],
     queryFn: () => api.students.list({ q: q || undefined, status: status || undefined }),
+  });
+
+  const plans = useQuery({
+    queryKey: ["plans"],
+    queryFn: () => api.plans.list(),
   });
 
   const trainers = useQuery({
@@ -56,6 +62,7 @@ export default function CrmPage() {
         city: form.city || null,
         state: form.state || null,
         goal: form.goal || null,
+        planId: form.planId || null,
         value: form.value || null,
         status: form.status,
         entryDate: form.entryDate,
@@ -116,6 +123,7 @@ export default function CrmPage() {
       city: "",
       state: "",
       goal: "",
+      planId: "",
       value: "",
       status: "Ativo",
       entryDate: new Date().toISOString().slice(0, 10),
@@ -134,6 +142,7 @@ export default function CrmPage() {
       city: s.city ?? "",
       state: s.state ?? "",
       goal: s.goal ?? "",
+      planId: s.planId ?? "",
       value: s.value ?? "",
       status: s.status,
       entryDate: s.entryDate,
@@ -203,6 +212,7 @@ export default function CrmPage() {
             <thead className="bg-surface text-[11px] font-semibold uppercase tracking-wider text-black/45">
               <tr>
                 <th className="px-4 py-3">Aluno</th>
+                <th className="px-4 py-3">Plano</th>
                 <th className="px-4 py-3">Status</th>
                 <th className="px-4 py-3">Valor</th>
                 <th className="px-4 py-3">Engaj.</th>
@@ -214,13 +224,13 @@ export default function CrmPage() {
             <tbody>
               {isLoading ? (
                 <tr>
-                  <td colSpan={7} className="px-4 py-8 text-center text-black/45">
+                  <td colSpan={8} className="px-4 py-8 text-center text-black/45">
                     Carregando alunos...
                   </td>
                 </tr>
               ) : students.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-4 py-8 text-center text-black/45">
+                  <td colSpan={8} className="px-4 py-8 text-center text-black/45">
                     Nenhum aluno encontrado
                   </td>
                 </tr>
@@ -239,8 +249,12 @@ export default function CrmPage() {
                           {[s.city, s.state].filter(Boolean).join(" / ") || "—"}
                         </p>
                       </td>
+                      <td className="px-4 py-3">{s.planName || "—"}</td>
                       <td className="px-4 py-3">
                         <StatusBadge status={s.status} />
+                        {s.status === "Inadimplente" && !s.appAccess ? (
+                          <p className="mt-1 text-[11px] text-danger">App bloqueado</p>
+                        ) : null}
                       </td>
                       <td className="px-4 py-3">{formatCurrency(s.value)}</td>
                       <td className="px-4 py-3">{s.engagement ?? 0}%</td>
@@ -335,6 +349,29 @@ export default function CrmPage() {
                 </label>
               ))}
               <label className="block sm:col-span-2">
+                <span className="ns-label">Plano</span>
+                <select
+                  className="ns-input"
+                  value={form.planId}
+                  onChange={(e) => {
+                    const planId = e.target.value;
+                    const plan = (plans.data?.data ?? []).find((item) => item.id === planId);
+                    setForm((current) => ({
+                      ...current,
+                      planId,
+                      value: plan?.value ?? current.value,
+                    }));
+                  }}
+                >
+                  <option value="">Sem plano</option>
+                  {(plans.data?.data ?? []).map((plan) => (
+                    <option key={plan.id} value={plan.id}>
+                      {plan.name} · {plan.value}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label className="block sm:col-span-2">
                 <span className="ns-label">Status</span>
                 <select
                   className="ns-input"
@@ -347,6 +384,11 @@ export default function CrmPage() {
                     </option>
                   ))}
                 </select>
+                <p className="mt-1 text-xs text-black/45">
+                  Ativo e inadimplente acompanham o pagamento: em dia fica ativo, 1 dia de atraso
+                  fica inadimplente e no 7º dia o app bloqueia treino e biofeedback. Pausado e
+                  cancelado só mudam por aqui, depois do contato com a equipe.
+                </p>
               </label>
               {isAdmin ? (
                 <label className="block sm:col-span-2">

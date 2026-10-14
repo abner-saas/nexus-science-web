@@ -29,4 +29,8 @@ export const STATUS_META = {
   Pausado: { color: theme.warning, bg: theme.warningDim },
   Inadimplente: { color: theme.danger, bg: theme.dangerDim },
   Cancelado: { color: "#6B7280", bg: "rgba(107,114,128,0.15)" },
+  "Em andamento": { color: theme.success, bg: theme.successDim },
+  "A liberar": { color: theme.warning, bg: theme.warningDim },
+  "Em digitação": { color: "#6B7280", bg: "rgba(107,114,128,0.15)" },
+  Concluída: { color: theme.primary, bg: theme.primaryDim },
 } as const;

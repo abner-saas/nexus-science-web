@@ -53,6 +53,7 @@ export type Student = {
   goal: string | null;
   restrictions: string | null;
   planId?: string | null;
+  planName?: string | null;
   value: string | null;
   status: "Ativo" | "Pausado" | "Inadimplente" | "Cancelado";
   entryDate: string;
@@ -203,6 +204,7 @@ export const api = {
         method: "PATCH",
         body: JSON.stringify(body),
       }),
+    removeTraining: (id: string) => request<void>(`/trainings/${id}`, { method: "DELETE" }),
     remove: (id: string) => request<void>(`/routines/${id}`, { method: "DELETE" }),
   },
 
@@ -224,9 +226,16 @@ export const api = {
   },
 
   finance: {
-    summary: () =>
-      request<{
+    summary: (params?: { period?: string; from?: string; to?: string }) => {
+      const sp = new URLSearchParams();
+      if (params?.period) sp.set("period", params.period);
+      if (params?.from) sp.set("from", params.from);
+      if (params?.to) sp.set("to", params.to);
+      const qs = sp.toString();
+      return request<{
         data: {
+          from?: string | null;
+          to?: string | null;
           revenue: number;
           expenses: number;
           profit: number;
@@ -239,12 +248,13 @@ export const api = {
           expenseByCategory?: Array<{ category: string; total: number }>;
           series: Array<{ month: string; revenue: number; expenses: number; profit: number }>;
         };
-      }>("/finance/summary"),
+      }>(`/finance/summary${qs ? `?${qs}` : ""}`);
+    },
     transactions: () =>
       request<{
         data: Array<{
           id: string;
-          type: string;
+          type: "RECEITA" | "DESPESA";
           category: string;
           description: string | null;
           amount: string;
@@ -257,6 +267,29 @@ export const api = {
         method: "POST",
         body: JSON.stringify(body),
       }),
+    updateTx: (id: string, body: Record<string, unknown>) =>
+      request<{ data: unknown }>(`/finance/transactions/${id}`, {
+        method: "PATCH",
+        body: JSON.stringify(body),
+      }),
+    removeTx: (id: string) => request<void>(`/finance/transactions/${id}`, { method: "DELETE" }),
+    categories: () =>
+      request<{
+        data: Array<{ id: string; name: string; type: "RECEITA" | "DESPESA"; matchTerms: string }>;
+      }>("/finance/categories"),
+    createCategory: (body: { name: string; type: "RECEITA" | "DESPESA"; matchTerms?: string }) =>
+      request<{ data: { id: string } }>("/finance/categories", {
+        method: "POST",
+        body: JSON.stringify(body),
+      }),
+    removeCategory: (id: string) =>
+      request<void>(`/finance/categories/${id}`, { method: "DELETE" }),
+    matchCategory: (type: "RECEITA" | "DESPESA", description: string) => {
+      const sp = new URLSearchParams({ type, description });
+      return request<{ data: { category: string | null } }>(
+        `/finance/category-match?${sp.toString()}`,
+      );
+    },
   },
 
   payments: {
