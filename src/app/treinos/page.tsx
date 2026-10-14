@@ -3,6 +3,7 @@
 import { FormEvent, useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AppShell } from "@/components/layout/app-shell";
+import { StatusBadge } from "@/components/ui/badge";
 import { api, type Routine } from "@/lib/api";
 
 type ExerciseDraft = {
@@ -14,15 +15,19 @@ type ExerciseDraft = {
   rest?: string;
 };
 
+const ROUTINE_STATUSES = ["Em digitação", "A liberar", "Em andamento", "Concluída"] as const;
+
 export default function TreinosPage() {
   const qc = useQueryClient();
   const { data: students } = useQuery({
     queryKey: ["students"],
     queryFn: () => api.students.list(),
   });
+  const [studentId, setStudentId] = useState("");
   const { data, isLoading } = useQuery({
-    queryKey: ["routines"],
-    queryFn: () => api.routines.list(),
+    queryKey: ["routines", studentId],
+    queryFn: () => api.routines.list(studentId),
+    enabled: Boolean(studentId),
   });
   const [open, setOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
@@ -30,42 +35,30 @@ export default function TreinosPage() {
   const [editingTrainingId, setEditingTrainingId] = useState<string | null>(null);
   const [exercises, setExercises] = useState<ExerciseDraft[]>([]);
   const [form, setForm] = useState({
-    studentId: "",
     name: "",
     objective: "",
     frequency: 3,
+    status: "Em digitação",
   });
+
+  const routines = useMemo(() => data?.data ?? [], [data?.data]);
+  const selectedRoutine = useMemo(
+    () => routines.find((routine) => routine.id === selected) ?? routines[0] ?? null,
+    [routines, selected],
+  );
 
   const create = useMutation({
     mutationFn: () =>
       api.routines.create({
-        studentId: form.studentId,
+        studentId,
         name: form.name,
         objective: form.objective || null,
         frequency: form.frequency,
-        trainings: [
-          {
-            code: "A",
-            name: "Treino A",
-            focus: "Full body",
-            dayOfWeek: "Segunda",
-            duration: "45 min",
-            exercises: [
-              {
-                name: "Agachamento",
-                group: "Quadríceps",
-                sets: 4,
-                reps: "12",
-                load: 40,
-                rest: "60s",
-              },
-              { name: "Supino", group: "Peitoral", sets: 4, reps: "10", load: 40, rest: "90s" },
-            ],
-          },
-        ],
+        status: form.status,
       }),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["routines"] });
+    onSuccess: (result) => {
+      qc.invalidateQueries({ queryKey: ["routines", studentId] });
+      setSelected(result.data.id);
       setOpen(false);
     },
   });
@@ -83,7 +76,7 @@ export default function TreinosPage() {
         })),
       }),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["routines"] });
+      qc.invalidateQueries({ queryKey: ["routines", studentId] });
       setEditOpen(false);
       setEditingTrainingId(null);
     },
@@ -92,32 +85,37 @@ export default function TreinosPage() {
   const addTraining = useMutation({
     mutationFn: (routineId: string) => {
       const codes = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-      const routine = (data?.data ?? []).find((r) => r.id === routineId);
+      const routine = routines.find((item) => item.id === routineId);
       const nextCode = codes[routine?.trainings.length ?? 0] ?? "X";
       return api.routines.addTraining(routineId, {
         code: nextCode,
         name: `Treino ${nextCode}`,
-        focus: "Geral",
+        focus: null,
         dayOfWeek: null,
-        duration: "45 min",
-        exercises: [{ name: "Exercício 1", group: "Geral", sets: 3, reps: "10", rest: "60s" }],
+        duration: null,
+        exercises: [],
       });
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["routines"] }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["routines", studentId] }),
   });
 
   const removeRoutine = useMutation({
     mutationFn: (id: string) => api.routines.remove(id),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["routines"] });
+      qc.invalidateQueries({ queryKey: ["routines", studentId] });
       setSelected(null);
     },
   });
 
-  const selectedRoutine = useMemo(
-    () => (data?.data ?? []).find((r) => r.id === selected) ?? data?.data?.[0] ?? null,
-    [data, selected],
-  );
+  const removeTraining = useMutation({
+    mutationFn: (id: string) => api.routines.removeTraining(id),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["routines", studentId] }),
+  });
+
+  const setStatus = useMutation({
+    mutationFn: (status: string) => api.routines.update(selectedRoutine!.id, { status }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["routines", studentId] }),
+  });
 
   function onSubmit(e: FormEvent) {
     e.preventDefault();
@@ -147,63 +145,115 @@ export default function TreinosPage() {
   return (
     <AppShell
       title="Acompanhamento de Treinos"
-      subtitle="Rotinas → treinos → exercícios"
+      subtitle="Aluno, depois a rotina, depois o treino e os exercícios"
       actions={
-        <button type="button" className="ns-btn-primary" onClick={() => setOpen(true)}>
+        <button
+          type="button"
+          className="ns-btn-primary"
+          disabled={!studentId}
+          onClick={() => setOpen(true)}
+        >
           Nova rotina
         </button>
       }
     >
-      <div className="grid gap-4 lg:grid-cols-[280px_1fr]">
+      <div className="grid gap-4 xl:grid-cols-[220px_260px_1fr]">
+        <div className="ns-card overflow-hidden">
+          <div className="border-b border-line bg-surface px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-black/45">
+            Aluno
+          </div>
+          <ul>
+            {(students?.data ?? []).map((student) => (
+              <li key={student.id}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setStudentId(student.id);
+                    setSelected(null);
+                  }}
+                  className={`w-full border-b border-line/70 px-4 py-3 text-left text-sm hover:bg-input ${
+                    studentId === student.id ? "bg-navy/5 font-semibold text-navy" : ""
+                  }`}
+                >
+                  {student.name}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+
         <div className="ns-card overflow-hidden">
           <div className="border-b border-line bg-surface px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-black/45">
             Rotinas
           </div>
-          {isLoading ? (
+          {!studentId ? (
+            <p className="p-4 text-sm text-black/45">
+              Selecione um aluno para ver as rotinas dele.
+            </p>
+          ) : isLoading ? (
             <p className="p-4 text-sm text-black/45">Carregando...</p>
+          ) : routines.length === 0 ? (
+            <p className="p-4 text-sm text-black/45">Este aluno ainda não tem rotina.</p>
           ) : (
             <ul>
-              {(data?.data ?? []).map((r) => (
-                <li key={r.id}>
+              {routines.map((routine) => (
+                <li key={routine.id}>
                   <button
                     type="button"
-                    onClick={() => setSelected(r.id)}
-                    className={`w-full border-b border-line/70 px-4 py-3 text-left text-sm transition hover:bg-input ${
-                      (selected ?? data?.data?.[0]?.id) === r.id
-                        ? "bg-navy/5 font-semibold text-navy"
-                        : ""
+                    onClick={() => setSelected(routine.id)}
+                    className={`w-full border-b border-line/70 px-4 py-3 text-left text-sm hover:bg-input ${
+                      selectedRoutine?.id === routine.id ? "bg-navy/5 font-semibold text-navy" : ""
                     }`}
                   >
-                    <p>{r.name}</p>
-                    <p className="text-xs font-normal text-black/45">{r.studentName}</p>
+                    <p>{routine.name}</p>
+                    <p className="text-xs font-normal text-black/45">{routine.status}</p>
                   </button>
                 </li>
               ))}
-              {(data?.data ?? []).length === 0 ? (
-                <li className="p-4 text-sm text-black/45">Nenhuma rotina ainda</li>
-              ) : null}
             </ul>
           )}
         </div>
 
         <div className="ns-card p-5">
           {!selectedRoutine ? (
-            <p className="text-sm text-black/50">Selecione ou crie uma rotina</p>
+            <p className="text-sm text-black/50">
+              {studentId ? "Crie ou selecione uma rotina." : "Comece escolhendo o aluno."}
+            </p>
           ) : (
             <>
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
                   <h2 className="font-title text-xl font-bold text-navy">{selectedRoutine.name}</h2>
                   <p className="text-sm text-black/50">
-                    {selectedRoutine.studentName} · {selectedRoutine.frequency}x/semana ·{" "}
-                    {selectedRoutine.completedSessions ?? 0}/{selectedRoutine.totalSessions ?? 0}{" "}
-                    sessões
+                    {selectedRoutine.frequency}x/semana · {selectedRoutine.completedSessions ?? 0}/
+                    {selectedRoutine.totalSessions ?? 0} sessões
                   </p>
                   {selectedRoutine.objective ? (
                     <p className="mt-2 text-sm text-black/60">{selectedRoutine.objective}</p>
                   ) : null}
                 </div>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap items-center gap-2">
+                  <label className="text-xs text-black/50">
+                    Status
+                    <select
+                      className="ns-input ml-2 inline-block w-auto"
+                      value={selectedRoutine.status}
+                      disabled={setStatus.isPending}
+                      onChange={(e) => setStatus.mutate(e.target.value)}
+                    >
+                      {ROUTINE_STATUSES.map((status) => (
+                        <option key={status} value={status}>
+                          {status}
+                        </option>
+                      ))}
+                      {ROUTINE_STATUSES.includes(
+                        selectedRoutine.status as (typeof ROUTINE_STATUSES)[number],
+                      ) ? null : (
+                        <option value={selectedRoutine.status}>{selectedRoutine.status}</option>
+                      )}
+                    </select>
+                  </label>
+                  <StatusBadge status={selectedRoutine.status} />
                   <button
                     type="button"
                     className="ns-btn-secondary text-xs"
@@ -221,55 +271,72 @@ export default function TreinosPage() {
                   >
                     Excluir rotina
                   </button>
-                  <span className="rounded-full bg-navy/10 px-2.5 py-0.5 text-xs font-semibold text-navy">
-                    {selectedRoutine.status}
-                  </span>
                 </div>
               </div>
+              <p className="mt-3 text-xs text-black/45">
+                Ao concluir a rotina em andamento, a próxima marcada como &quot;A liberar&quot;
+                passa a ser a rotina em andamento. O app do aluno mostra só essa.
+              </p>
 
               <div className="mt-5 space-y-4">
-                {selectedRoutine.trainings.map((t) => (
-                  <div key={t.id} className="rounded-xl border border-line bg-input/60 p-4">
+                {selectedRoutine.trainings.length === 0 ? (
+                  <p className="text-sm text-black/45">
+                    Nenhum treino nesta rotina. Crie o Treino A.
+                  </p>
+                ) : null}
+                {selectedRoutine.trainings.map((training) => (
+                  <div key={training.id} className="rounded-xl border border-line bg-input/60 p-4">
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <p className="font-semibold text-ink">
-                        {t.code} — {t.name}
+                        {training.code} — {training.name}
                       </p>
                       <div className="flex items-center gap-2">
-                        <p className="text-xs text-black/45">
-                          {[t.dayOfWeek, t.focus, t.duration].filter(Boolean).join(" · ")}
-                        </p>
                         <button
                           type="button"
                           className="ns-btn-ghost text-xs"
-                          onClick={() => openEditor(t)}
+                          onClick={() => openEditor(training)}
                         >
-                          Editar exercícios
+                          {training.exercises.length ? "Editar exercícios" : "Incluir exercício"}
+                        </button>
+                        <button
+                          type="button"
+                          className="ns-btn-ghost text-xs text-danger"
+                          onClick={() => {
+                            if (confirm(`Excluir ${training.name}?`))
+                              removeTraining.mutate(training.id);
+                          }}
+                        >
+                          Excluir treino
                         </button>
                       </div>
                     </div>
-                    <table className="mt-3 w-full text-left text-sm">
-                      <thead className="text-[11px] uppercase tracking-wider text-black/40">
-                        <tr>
-                          <th className="py-1">Exercício</th>
-                          <th className="py-1">Séries</th>
-                          <th className="py-1">Reps</th>
-                          <th className="py-1">Carga</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {t.exercises.map((ex, i) => (
-                          <tr key={i} className="border-t border-line/60">
-                            <td className="py-2">
-                              <p className="font-medium">{ex.name}</p>
-                              <p className="text-xs text-black/40">{ex.group}</p>
-                            </td>
-                            <td className="py-2">{ex.sets}</td>
-                            <td className="py-2">{ex.reps}</td>
-                            <td className="py-2">{ex.load ? `${ex.load} kg` : "—"}</td>
+                    {training.exercises.length === 0 ? (
+                      <p className="mt-3 text-sm text-black/45">Nenhum exercício neste treino.</p>
+                    ) : (
+                      <table className="mt-3 w-full text-left text-sm">
+                        <thead className="text-[11px] uppercase tracking-wider text-black/40">
+                          <tr>
+                            <th className="py-1">Exercício</th>
+                            <th className="py-1">Séries</th>
+                            <th className="py-1">Reps</th>
+                            <th className="py-1">Carga</th>
                           </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                        </thead>
+                        <tbody>
+                          {training.exercises.map((ex, index) => (
+                            <tr key={`${ex.name}-${index}`} className="border-t border-line/60">
+                              <td className="py-2">
+                                <p className="font-medium">{ex.name}</p>
+                                <p className="text-xs text-black/40">{ex.group}</p>
+                              </td>
+                              <td className="py-2">{ex.sets}</td>
+                              <td className="py-2">{ex.reps}</td>
+                              <td className="py-2">{ex.load ? `${ex.load} kg` : "—"}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    )}
                   </div>
                 ))}
               </div>
@@ -283,22 +350,6 @@ export default function TreinosPage() {
           <form onSubmit={onSubmit} className="ns-card w-full max-w-md p-6">
             <h2 className="font-title text-xl font-bold text-navy">Nova rotina</h2>
             <div className="mt-4 space-y-3">
-              <label className="block">
-                <span className="ns-label">Aluno</span>
-                <select
-                  required
-                  className="ns-input"
-                  value={form.studentId}
-                  onChange={(e) => setForm({ ...form, studentId: e.target.value })}
-                >
-                  <option value="">Selecione</option>
-                  {(students?.data ?? []).map((s) => (
-                    <option key={s.id} value={s.id}>
-                      {s.name}
-                    </option>
-                  ))}
-                </select>
-              </label>
               <label className="block">
                 <span className="ns-label">Nome da rotina</span>
                 <input
@@ -327,9 +378,24 @@ export default function TreinosPage() {
                   onChange={(e) => setForm({ ...form, frequency: Number(e.target.value) })}
                 />
               </label>
+              <label className="block">
+                <span className="ns-label">Status inicial</span>
+                <select
+                  className="ns-input"
+                  value={form.status}
+                  onChange={(e) => setForm({ ...form, status: e.target.value })}
+                >
+                  {ROUTINE_STATUSES.map((status) => (
+                    <option key={status} value={status}>
+                      {status}
+                    </option>
+                  ))}
+                </select>
+              </label>
             </div>
             <p className="mt-3 text-xs text-black/45">
-              Será criado um Treino A inicial — edite os exercícios depois.
+              A rotina nasce sem treino. O próximo passo é criar Treino A, B ou C e incluir os
+              exercícios.
             </p>
             <div className="mt-5 flex justify-end gap-2">
               <button type="button" className="ns-btn-ghost" onClick={() => setOpen(false)}>
@@ -349,7 +415,7 @@ export default function TreinosPage() {
             onSubmit={onSaveExercises}
             className="ns-card max-h-[90vh] w-full max-w-2xl overflow-y-auto p-6"
           >
-            <h2 className="font-title text-xl font-bold text-navy">Editar exercícios</h2>
+            <h2 className="font-title text-xl font-bold text-navy">Exercícios do treino</h2>
             <div className="mt-4 space-y-3">
               {exercises.map((ex, idx) => (
                 <div

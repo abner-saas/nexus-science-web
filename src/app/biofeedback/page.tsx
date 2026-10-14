@@ -55,6 +55,8 @@ export default function BiofeedbackPage() {
 
   const rows = data?.data ?? [];
   const energySeries = [...rows].reverse().map((r) => r.energy ?? 0);
+  const savedInsight = rows.find((row) => row.aiInsight)?.aiInsight ?? null;
+  const shownInsight = insight ?? savedInsight;
 
   function onSubmit(e: FormEvent) {
     e.preventDefault();
@@ -64,7 +66,7 @@ export default function BiofeedbackPage() {
   return (
     <AppShell
       title="Biofeedback"
-      subtitle="Indicadores de bem-estar, recuperação e performance"
+      subtitle="Humor e hidratação entram no registro e na leitura dos últimos 7 dias"
       actions={
         <button
           type="button"
@@ -110,6 +112,8 @@ export default function BiofeedbackPage() {
                     <th>Energia</th>
                     <th>Sono</th>
                     <th>Estresse</th>
+                    <th>Humor</th>
+                    <th>Hidratação</th>
                     <th>Dor</th>
                   </tr>
                 </thead>
@@ -120,6 +124,8 @@ export default function BiofeedbackPage() {
                       <td>{r.energy ?? "—"}</td>
                       <td>{r.sleep ?? "—"}</td>
                       <td>{r.stress ?? "—"}</td>
+                      <td>{r.mood ?? "—"}</td>
+                      <td>{r.hydration ? `${r.hydration} L` : "—"}</td>
                       <td>{r.musclePain ?? "—"}</td>
                     </tr>
                   ))}
@@ -185,14 +191,15 @@ export default function BiofeedbackPage() {
 
           <div className="ns-card border-l-4 border-l-maroon p-5">
             <p className="ns-kpi-label text-maroon">Insight científico</p>
-            {insight ? (
+            {shownInsight ? (
               <p className="mt-3 whitespace-pre-wrap text-sm leading-relaxed text-black/70">
-                {insight}
+                {shownInsight}
               </p>
             ) : (
               <p className="mt-3 text-sm text-black/45">
-                Clique em &quot;Gerar Análise IA&quot; para cruzar os últimos 7 dias com o objetivo
-                do aluno.
+                Gerar análise lê os últimos 7 dias — energia, humor, sono, estresse, dor, hidratação
+                e peso — junto com o objetivo do aluno, e pede o texto para a OpenAI. O resultado
+                fica salvo no registro mais recente.
               </p>
             )}
           </div>
